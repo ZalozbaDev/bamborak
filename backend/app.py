@@ -6,6 +6,7 @@ from flask_cors import CORS, cross_origin
 import os
 import subprocess
 import json
+import torch
 
 if use_tts:
     from TTS.api import TTS
@@ -65,6 +66,8 @@ speaker_config = {}
 synthesizers = {}
 
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
 app = flask.Flask(__name__)
 
 
@@ -99,11 +102,12 @@ def init_synthesiszers():
                 + cur_model_path
             )
             logger.debug("init_synthesiszers ...: " + str(speaker[1]))
+            logger.debug("using device: " + device)
             synthesizers[speaker[0]] = {
                 "tts": TTS(
                     model_path=cur_model_path,
                     config_path=cur_config_path,
-                )
+                ).to(device)
             }
             if speaker[1]["multi_speaker"]:
                 synthesizers[speaker[0]]["speakers"] = synthesizers[speaker[0]][
