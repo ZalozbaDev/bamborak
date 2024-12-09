@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd application && npm start
+cd application && npm run dev

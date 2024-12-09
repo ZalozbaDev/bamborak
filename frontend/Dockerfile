@@ -7,10 +7,10 @@ MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
 RUN mkdir -p /application/src
 
 COPY src    /application/src
-COPY package.json package-lock.json vite.config.js /application
+COPY package.json package-lock.json vite.config.js index.html /application
 
 RUN cd application && npm install
 
-COPY docker/startme.sh /
+COPY startme.sh /
 
 CMD ["/bin/bash", "-c", "/startme.sh"] 
