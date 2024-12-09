@@ -2,7 +2,7 @@ use_tts = True
 
 import flask
 from flask import request, jsonify, send_file
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import os
 import subprocess
 import json
@@ -71,6 +71,7 @@ app = flask.Flask(__name__)
 # CORS
 def init_app():
     CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 def init_config():
