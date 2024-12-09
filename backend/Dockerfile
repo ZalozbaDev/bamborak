@@ -26,7 +26,10 @@ RUN mkdir logs
 
 COPY ./ /usr/app/src/
 
+RUN mkdir tts_models
+
 EXPOSE 8080
+
 RUN chmod u+x start.sh
 
 CMD ["./start.sh", "logs"]
