@@ -1,0 +1,41 @@
+FROM ubuntu:jammy
+MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
+
+# normal call
+# docker build -f Dockerfile.cuda --progress=plain -t bamborak_backend_cuda .
+
+WORKDIR /usr/app/src
+
+RUN apt update
+
+RUN apt install -y libsndfile1 sox libsox-fmt-all
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN apt install -y python3-pip
+
+COPY requirements.txt requirements_pinned.txt /
+
+# RUN pip install -r /requirements.txt
+# RUN pip freeze
+
+RUN pip install -r /requirements_pinned.txt
+
+RUN apt install -y nvidia-cuda-toolkit 
+
+# try to force a fixed version
+RUN apt install -y nvidia-utils-535-server=535.216.01-0ubuntu0.22.04.1
+
+RUN mkdir temp
+RUN mkdir logs
+
+COPY ./ /usr/app/src/
+
+RUN mkdir tts_models
+
+EXPOSE 8080
+
+RUN chmod u+x start.sh
+
+CMD ["./start.sh", "logs"]
