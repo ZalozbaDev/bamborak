@@ -7,7 +7,7 @@ MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
 RUN mkdir -p /application/src
 
 COPY src    /application/src
-COPY package.json package-lock.json vite.config.js index.html /application
+COPY package.json package-lock.json vite.config.js index.html /application/
 
 RUN cd application && npm install
 
