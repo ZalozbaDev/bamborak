@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu:noble
 MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
 
 # normal call
@@ -13,19 +13,30 @@ RUN apt install -y libsndfile1 sox libsox-fmt-all
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-RUN apt install -y python3-pip
+RUN apt install -y zlib1g zlib1g-dev libssl-dev libbz2-dev uuid-dev libsqlite3-dev liblzma-dev wget libffi-dev gcc g++ make
+RUN wget https://www.python.org/ftp/python/3.11.11/Python-3.11.11.tgz
+RUN tar xvfz Python-3.11.11.tgz
+RUN cd Python-3.11.11/ && ./configure --enable-optimizations && make -j && make altinstall
+
+
+#RUN apt install -y python3-pip python3-venv
+
+#RUN apt install -y python3-setuptools python3-distutils-extra
 
 COPY requirements.txt requirements_pinned.txt /
 
 # RUN pip install -r /requirements.txt
 # RUN pip freeze
 
-RUN pip install -r /requirements_pinned.txt
+RUN cd /usr/app/src && python3.11 -m venv .
+
+# RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install setuputils'
+RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install -r /requirements_pinned.txt'
 
 RUN apt install -y nvidia-cuda-toolkit 
 
 # try to force a fixed version
-RUN apt install -y nvidia-utils-535-server=535.216.01-0ubuntu0.22.04.1
+RUN apt install -y nvidia-utils-535-server=535.216.03-0ubuntu0.24.04.1
 
 RUN mkdir temp
 RUN mkdir logs
