@@ -16,5 +16,14 @@
         "multi_speaker": false,
         "lower": false,
         "info": "test"
+    },
+    "test": {
+        "speaker": "Test",
+        "speaker_id": "test",
+        "model": "test.pth",
+        "config": "test.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "testmodel"
     }
 }
