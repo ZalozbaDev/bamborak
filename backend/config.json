@@ -17,6 +17,15 @@
         "lower": false,
         "info": "test"
     },
+    "michal": {
+        "speaker": "Michal",
+        "speaker_id": "michal",
+        "model": "michal.pth",
+        "config": "michal.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 04.02.2025"
+    },
     "test": {
         "speaker": "Test",
         "speaker_id": "test",
