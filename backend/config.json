@@ -24,7 +24,7 @@
         "config": "michal.json",
         "multi_speaker": false,
         "lower": false,
-        "info": "Staw 04.02.2025"
+        "info": "Staw 05.02.2025"
     },
     "test": {
         "speaker": "Test",
