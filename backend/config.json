@@ -18,7 +18,7 @@
         "info": "test"
     },
     "michal": {
-        "speaker": "Michal",
+        "speaker": "Michał",
         "speaker_id": "michal",
         "model": "michal.pth",
         "config": "michal.json",

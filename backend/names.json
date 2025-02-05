@@ -2,13 +2,15 @@
   "tts_v2": {
     "0": "Weronika",
     "3": "Korla",
-    "6": "Michal",
-    "9": "Test"
+    "6": "Michał",
+    "9": "Test",
+    "10": "Testmulti"
   },
   "tts_v3": {
     "0": "Weronika",
     "3": "Korla",
-    "6": "Michal",
-    "9": "Test"
+    "6": "Michał",
+    "9": "Test",
+    "10": "Testmulti"
   }
 }
