@@ -17,14 +17,32 @@
         "lower": false,
         "info": "test"
     },
-    "michal": {
-        "speaker": "Michał",
-        "speaker_id": "michal",
-        "model": "michal.pth",
-        "config": "michal.json",
+    "michal_1": {
+        "speaker": "Michał 1",
+        "speaker_id": "michal_1",
+        "model": "michal_1.pth",
+        "config": "michal_1.json",
         "multi_speaker": false,
         "lower": false,
         "info": "Staw 05.02.2025"
+    },
+    "michal_2": {
+        "speaker": "Michał 2",
+        "speaker_id": "michal_2",
+        "model": "michal_2.pth",
+        "config": "michal_2.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 06.02.2025"
+    },
+    "michal_3": {
+        "speaker": "Michał 3",
+        "speaker_id": "michal_3",
+        "model": "michal_3.pth",
+        "config": "michal_3.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 07.02.2025"
     },
     "test": {
         "speaker": "Test",
