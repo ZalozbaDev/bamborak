@@ -42,7 +42,16 @@
         "config": "michal_3.json",
         "multi_speaker": false,
         "lower": false,
-        "info": "Staw 07.02.2025"
+        "info": "Staw 07.02.2025 rano"
+    },
+    "michal_4": {
+        "speaker": "Michał 4",
+        "speaker_id": "michal_4",
+        "model": "michal_4.pth",
+        "config": "michal_4.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 07.02.2025 popołdnju"
     },
     "test": {
         "speaker": "Test",
