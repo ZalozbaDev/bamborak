@@ -1,22 +1,7 @@
 {
-  "tts_v2": {
-    "0": "Weronika",
-    "3": "Korla",
-    "6": "Michał 1",
-    "7": "Michał 2",
-    "8": "Michał 3",
-    "9": "Michał 4",
-    "10": "Test",
-    "11": "Testmulti"
-  },
-  "tts_v3": {
-    "0": "Weronika",
-    "3": "Korla",
-    "6": "Michał 1",
-    "7": "Michał 2",
-    "8": "Michał 3",
-    "9": "Michał 4",
-    "10": "Test",
-    "11": "Testmulti"
+  "multi_2025_02_11": {
+    "0": "Test",
+    "9": "Michał",
+    "7": "Arnd"
   }
 }

@@ -17,49 +17,13 @@
         "lower": false,
         "info": "test"
     },
-    "michal_1": {
-        "speaker": "Michał 1",
-        "speaker_id": "michal_1",
-        "model": "michal_1.pth",
-        "config": "michal_1.json",
-        "multi_speaker": false,
+    "multi_2025_02_11": {
+        "speaker": "",
+        "speaker_id": "multi_2025_02_11",
+        "model": "multi_2025_02_11_282315.pth",
+        "config": "multi_2025_02_11_282315_config.json",
+        "multi_speaker": true,
         "lower": false,
-        "info": "Staw 05.02.2025"
-    },
-    "michal_2": {
-        "speaker": "Michał 2",
-        "speaker_id": "michal_2",
-        "model": "michal_2.pth",
-        "config": "michal_2.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 06.02.2025"
-    },
-    "michal_3": {
-        "speaker": "Michał 3",
-        "speaker_id": "michal_3",
-        "model": "michal_3.pth",
-        "config": "michal_3.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 07.02.2025 rano"
-    },
-    "michal_4": {
-        "speaker": "Michał 4",
-        "speaker_id": "michal_4",
-        "model": "michal_4.pth",
-        "config": "michal_4.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 07.02.2025 popołdnju"
-    },
-    "test": {
-        "speaker": "Test",
-        "speaker_id": "test",
-        "model": "test.pth",
-        "config": "test.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "testmodel"
+        "info": "Staw 11.02.2025"
     }
 }

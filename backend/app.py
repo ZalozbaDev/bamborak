@@ -201,14 +201,15 @@ def fetch_speakers():
                                 "info": speaker[1]["info"],
                             }
                         )
-                else:
-                    speakers.append(
-                        {
-                            "name": f"{speaker[1]['speaker']} {idx}",
-                            "id": f"{speaker[1]['speaker_id']}/{sub_speaker}",
-                            "info": speaker[1]["info"],
-                        }
-                    )
+                # disabled to not publish speakers that are not explicitly listed 
+                #else:
+                #    speakers.append(
+                #        {
+                #            "name": f"{speaker[1]['speaker']} {idx}",
+                #            "id": f"{speaker[1]['speaker_id']}/{sub_speaker}",
+                #            "info": speaker[1]["info"],
+                #        }
+                #    )
         else:
             speakers.append(
                 {
