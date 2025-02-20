@@ -34,5 +34,14 @@
         "multi_speaker": false,
         "lower": false,
         "info": "Staw 20.02.2025"
+    },
+    "arnd_multi_2025_02_21": {
+        "speaker": "Arnd (finetune)",
+        "speaker_id": "arnd_multi_2025_02_21",
+        "model": "arnd_multi_2025_02_21.pth",
+        "config": "arnd_multi_2025_02_21_config.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 21.02.2025"
     }
 }
