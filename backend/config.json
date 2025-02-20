@@ -25,5 +25,14 @@
         "multi_speaker": true,
         "lower": false,
         "info": "Staw 11.02.2025"
+    },
+    "michal_multi_2025_02_20": {
+        "speaker": "Michał (finetune)",
+        "speaker_id": "michal_multi_2025_02_20",
+        "model": "michal_multi_2025_02_20.pth",
+        "config": "michal_multi_2025_02_20_config.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 20.02.2025"
     }
 }
