@@ -23,7 +23,7 @@ RUN cd Python-3.11.11/ && ./configure --enable-optimizations && make -j && make 
 
 #RUN apt install -y python3-setuptools python3-distutils-extra
 
-COPY requirements.txt requirements_pinned.txt /
+COPY requirements.txt requirements_pinned_cuda.txt /
 
 # RUN pip install -r /requirements.txt
 # RUN pip freeze
@@ -31,8 +31,9 @@ COPY requirements.txt requirements_pinned.txt /
 RUN cd /usr/app/src && python3.11 -m venv .
 
 # RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install setuputils'
-RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install -r /requirements_pinned.txt'
+RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install -r /requirements_pinned_cuda.txt'
 
+RUN apt update
 RUN apt install -y nvidia-cuda-toolkit 
 
 # try to force a fixed version
