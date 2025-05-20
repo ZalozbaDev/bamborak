@@ -199,6 +199,7 @@ def fetch_speakers():
                                 "name": f"{names[speaker[0]][str(idx)]}",
                                 "id": f"{speaker[1]['speaker_id']}/{sub_speaker}",
                                 "info": speaker[1]["info"],
+                                "language": speaker[1]["language"],
                             }
                         )
                 # disabled to not publish speakers that are not explicitly listed 
@@ -216,6 +217,7 @@ def fetch_speakers():
                     "name": speaker[1]["speaker"],
                     "id": speaker[1]["speaker_id"],
                     "info": speaker[1]["info"],
+                    "language": speaker[1]["language"],
                 }
             )
     return jsonify(speakers)
@@ -249,6 +251,9 @@ def main():
             if speaker_id not in speaker_config:
                 return err_msg("invalid speaker_id")
 
+        # Get language from config
+        language = speaker_config[speaker_id]["language"]
+        
         text = request.json["text"].strip()
 
         if LIMIT_CHARS > 0 and len(text) > LIMIT_CHARS:
@@ -259,75 +264,80 @@ def main():
         else:
             text = f"{text}."
 
-        for match in re.findall(r"\b\d{4}-\d{2,4}\b", text):
-            first_num, sec_num = match.split("-")
-            first_num_txt = year_to_text(first_num)
-            sec_num_txt = year_to_text(sec_num)
-            text = text.replace(match, f"{first_num_txt} do {sec_num_txt}")
+        # Language-specific text processing
+        if language == "hsb":
+            print("processing for: hsb")
 
-        for match in re.findall(r"\d{1,2}:\d{2}\s*hodź(?:\.|in)?", text):
-            first_num, sec_num = match.split(":")
-            sec_num = "".join(char for char in sec_num if char.isdigit())
-            first_num_txt = number_to_text(first_num)
-            if sec_num != "00":
-                sec_num_txt = number_to_text(sec_num)
-            else:
-                sec_num_txt = ""
-            text = text.replace(match, f"{first_num_txt} hodźin {sec_num_txt}")
+            for match in re.findall(r"\b\d{4}-\d{2,4}\b", text):
+                first_num, sec_num = match.split("-")
+                first_num_txt = year_to_text(first_num)
+                sec_num_txt = year_to_text(sec_num)
+                text = text.replace(match, f"{first_num_txt} do {sec_num_txt}")
 
-        abbr_start = None
-        num_start = None
-        res_text = ""
-        curstate = "char"
-        laststate = ""
-        for index in range(len(text)):
-            char = text[index]
-            # print(f".. {index} {char}")
-            if char.isupper():
-                if abbr_start is None:
-                    abbr_start = index
-                    curstate = "abbr"
-                    # print(f"starting abbreviation at {index}")
-            elif is_number(char):
-                if num_start is None:
-                    num_start = index
-                    curstate = "num"
-                    # print(f"starting number at {index}")
-            else:
-                curstate = "char"
-            # print(f"{laststate} -> {curstate}")
+            for match in re.findall(r"\d{1,2}:\d{2}\s*hodź(?:\.|in)?", text):
+                first_num, sec_num = match.split(":")
+                sec_num = "".join(char for char in sec_num if char.isdigit())
+                first_num_txt = number_to_text(first_num)
+                if sec_num != "00":
+                    sec_num_txt = number_to_text(sec_num)
+                else:
+                    sec_num_txt = ""
+                text = text.replace(match, f"{first_num_txt} hodźin {sec_num_txt}")
 
-            if curstate != laststate:
-                if laststate == "abbr":
-                    written_abbr = ""
-                    abbr = text[abbr_start:index]
-                    # print(f"found abbreviation {abbr}")
-                    if len(abbr) > 1:
-                        for letter in abbr:
-                            written_abbr = (
-                                f"{written_abbr} {char_to_spoken[letter.lower()]}"
-                            )
-                        res_text = res_text + " " + written_abbr + " "
-                    else:
-                        res_text = res_text + abbr
-                    abbr_start = None
-                elif laststate == "num":
-                    num = text[num_start:index]
-                    # print(f"found number {num}")
-                    res_text = res_text + " " + number_to_text(num) + " "
-                    num_start = None
+            abbr_start = None
+            num_start = None
+            res_text = ""
+            curstate = "char"
+            laststate = ""
+            for index in range(len(text)):
+                char = text[index]
+                if char.isupper():
+                    if abbr_start is None:
+                        abbr_start = index
+                        curstate = "abbr"
+                elif is_number(char):
+                    if num_start is None:
+                        num_start = index
+                        curstate = "num"
+                else:
+                    curstate = "char"
 
-            if curstate == "char":
-                res_text = res_text + char
-            # print(f"res_text: {res_text}")
+                if curstate != laststate:
+                    if laststate == "abbr":
+                        written_abbr = ""
+                        abbr = text[abbr_start:index]
+                        if len(abbr) > 1:
+                            for letter in abbr:
+                                written_abbr = (
+                                    f"{written_abbr} {char_to_spoken[letter.lower()]}"
+                                )
+                            res_text = res_text + " " + written_abbr + " "
+                        else:
+                            res_text = res_text + abbr
+                        abbr_start = None
+                    elif laststate == "num":
+                        num = text[num_start:index]
+                        res_text = res_text + " " + number_to_text(num) + " "
+                        num_start = None
 
-            laststate = curstate
+                if curstate == "char":
+                    res_text = res_text + char
 
-        if speaker_config[speaker_id]["lower"]:
-            res_text = res_text.lower()
-        res_text = res_text.replace("  ", " ")
-        res_text = res_text.replace("\xad", "")
-        res_text = res_text.replace("x", "ks")
+                laststate = curstate
+
+            if speaker_config[speaker_id]["lower"]:
+                res_text = res_text.lower()
+            res_text = res_text.replace("  ", " ")
+            res_text = res_text.replace("\xad", "")
+            res_text = res_text.replace("x", "ks")
+        elif language == "de":
+          print("processing for: de")
+            # TODO: Add language-specific text processing for german languages
+        else:
+            # TODO: Add language-specific text processing for other languages
+            print("processing for: unknown language")
+            res_text = text
+  
         temp_wav_file_path = f"temp/{uuid.uuid4().hex}.wav"
         temp_mp3_file_path = f"temp/{uuid.uuid4().hex}.mp3"
         logger.debug(">> calling synthesizer for '" + str(res_text) + "'")
