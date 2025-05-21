@@ -48,5 +48,15 @@
     "lower": false,
     "info": "Staw 21.02.2025",
     "language": "hsb"
+  },
+  "thorsten": {
+    "speaker": "Thorsten (němsce)",
+    "speaker_id": "thorsten",
+    "model": "thorsten.pth",
+    "config": "thorsten.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Němski hłós https://huggingface.co/Thorsten-Voice/VITS",
+    "language": "de"
   }
 }
