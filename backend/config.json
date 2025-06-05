@@ -1,65 +1,72 @@
 {
-    "weronika": {
-        "speaker": "Weronika",
-        "speaker_id": "weronika",
-        "model": "weronika.pth",
-        "config": "weronika.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 28.08.2024"
-    },
-    "korla": {
-        "speaker": "Korla",
-        "speaker_id": "korla",
-        "model": "korla.pth",
-        "config": "korla.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "test"
-    },
-    "multi_2025_02_11": {
-        "speaker": "",
-        "speaker_id": "multi_2025_02_11",
-        "model": "multi_2025_02_11_282315.pth",
-        "config": "multi_2025_02_11_282315_config.json",
-        "multi_speaker": true,
-        "lower": false,
-        "info": "Staw 11.02.2025"
-    },
-    "michal_multi_2025_02_20": {
-        "speaker": "Michał (finetune)",
-        "speaker_id": "michal_multi_2025_02_20",
-        "model": "michal_multi_2025_02_20.pth",
-        "config": "michal_multi_2025_02_20_config.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 20.02.2025"
-    },
-    "arnd_multi_2025_02_21": {
-        "speaker": "Arnd (finetune)",
-        "speaker_id": "arnd_multi_2025_02_21",
-        "model": "arnd_multi_2025_02_21.pth",
-        "config": "arnd_multi_2025_02_21_config.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 21.02.2025"
-    },
-    "katka_2025_06_04": {
-        "speaker": "Katka (single)",
-        "speaker_id": "katka_2025_06_04",
-        "model": "katka_2025_06_04.pth",
-        "config": "katka_2025_06_04.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Staw 04.06.2025"
-    },
-    "thorsten": {
-        "speaker": "Thorsten (němsce)",
-        "speaker_id": "thorsten",
-        "model": "thorsten.pth",
-        "config": "thorsten.json",
-        "multi_speaker": false,
-        "lower": false,
-        "info": "Němski hłós https://huggingface.co/Thorsten-Voice/VITS"
-    }
+  "weronika": {
+    "speaker": "Weronika",
+    "speaker_id": "weronika",
+    "model": "weronika.pth",
+    "config": "weronika.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 28.08.2024",
+    "language": "hsb"
+  },
+  "korla": {
+    "speaker": "Korla",
+    "speaker_id": "korla",
+    "model": "korla.pth",
+    "config": "korla.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "test",
+    "language": "hsb"
+  },
+  "multi_2025_02_11": {
+    "speaker": "",
+    "speaker_id": "multi_2025_02_11",
+    "model": "multi_2025_02_11_282315.pth",
+    "config": "multi_2025_02_11_282315_config.json",
+    "multi_speaker": true,
+    "lower": false,
+    "info": "Staw 11.02.2025",
+    "language": "hsb"
+  },
+  "michal_multi_2025_02_20": {
+    "speaker": "Michał (finetune)",
+    "speaker_id": "michal_multi_2025_02_20",
+    "model": "michal_multi_2025_02_20.pth",
+    "config": "michal_multi_2025_02_20_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 20.02.2025",
+    "language": "hsb"
+  },
+  "arnd_multi_2025_02_21": {
+    "speaker": "Arnd (finetune)",
+    "speaker_id": "arnd_multi_2025_02_21",
+    "model": "arnd_multi_2025_02_21.pth",
+    "config": "arnd_multi_2025_02_21_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 21.02.2025",
+    "language": "hsb"
+  },
+  "katka_2025_06_04": {
+    "speaker": "Katka (single)",
+    "speaker_id": "katka_2025_06_04",
+    "model": "katka_2025_06_04.pth",
+    "config": "katka_2025_06_04.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 04.06.2025",
+    "language": "hsb"
+  },
+  "thorsten": {
+    "speaker": "Thorsten (němsce)",
+    "speaker_id": "thorsten",
+    "model": "thorsten.pth",
+    "config": "thorsten.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Němski hłós https://huggingface.co/Thorsten-Voice/VITS",
+    "language": "de"
+  }
 }
