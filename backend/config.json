@@ -44,6 +44,15 @@
         "lower": false,
         "info": "Staw 21.02.2025"
     },
+    "katka_2025_06_04": {
+        "speaker": "Katka (single)",
+        "speaker_id": "katka_2025_06_04",
+        "model": "katka_2025_06_04.pth",
+        "config": "katka_2025_06_04.json",
+        "multi_speaker": false,
+        "lower": false,
+        "info": "Staw 04.06.2025"
+    },
     "thorsten": {
         "speaker": "Thorsten (němsce)",
         "speaker_id": "thorsten",
