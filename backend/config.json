@@ -59,6 +59,16 @@
     "info": "Staw 10.06.2025",
     "language": "hsb"
   },
+  "katka_fine_2025_06_10": {
+    "speaker": "Katka (finetune)",
+    "speaker_id": "katka_fine_2025_06_10",
+    "model": "katka_fine_2025_06_10.pth",
+    "config": "katka_fine_2025_06_10_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 10.06.2025",
+    "language": "hsb"
+  },
   "thorsten": {
     "speaker": "Thorsten (němsce)",
     "speaker_id": "thorsten",
@@ -68,5 +78,25 @@
     "lower": false,
     "info": "Němski hłós https://huggingface.co/Thorsten-Voice/VITS",
     "language": "de"
+  },
+  "korla2": {
+    "speaker": "Korla (kostrjanc)",
+    "speaker_id": "korla2",
+    "model": "korla2.pth",
+    "config": "korla2_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "staw 01.07.2025 (kostrjanc) https://hf.co/Korla/tts-modele",
+    "language": "hsb"
+  },
+  "cyril": {
+    "speaker": "Cyril (kostrjanc)",
+    "speaker_id": "cyril",
+    "model": "cyril.pth",
+    "config": "cyril_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "staw 01.07.2025 (kostrjanc) https://hf.co/Korla/tts-modele",
+    "language": "hsb"
   }
 }
