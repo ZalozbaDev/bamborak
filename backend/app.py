@@ -170,6 +170,7 @@ def delete_temp_files(file0, file1):
     #   exec(f"ls -l temp")
     exec(f"rm {file0}")
     exec(f"rm {file1}")
+    torch.cuda.empty_cache()
 
 
 def exec(cmd):
