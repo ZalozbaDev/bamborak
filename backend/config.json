@@ -6,7 +6,7 @@
     "config": "weronika.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "Staw 28.08.2024",
+    "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
   "korla": {
@@ -16,7 +16,7 @@
     "config": "korla.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "test",
+    "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
   "multi_2025_02_11": {
@@ -49,24 +49,14 @@
     "info": "Staw 21.02.2025",
     "language": "hsb"
   },
-  "katka_2025_06_04": {
-    "speaker": "Katka (single)",
-    "speaker_id": "katka_2025_06_04",
-    "model": "katka_2025_06_04.pth",
-    "config": "katka_2025_06_04.json",
+  "katka_2025_07": {
+    "speaker": "Katka",
+    "speaker_id": "katka_2025_07",
+    "model": "katka_2025_07.pth",
+    "config": "katka_2025_07_config.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "Staw 10.06.2025",
-    "language": "hsb"
-  },
-  "katka_fine_2025_06_10": {
-    "speaker": "Katka (finetune)",
-    "speaker_id": "katka_fine_2025_06_10",
-    "model": "katka_fine_2025_06_10.pth",
-    "config": "katka_fine_2025_06_10_config.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 10.06.2025",
+    "info": "Staw 07.07.2025 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
   "thorsten": {
@@ -76,7 +66,7 @@
     "config": "thorsten.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "Němski hłós https://huggingface.co/Thorsten-Voice/VITS",
+    "info": "Němski hłós <a href='https://huggingface.co/Thorsten-Voice/VITS'>https://hf.co/Thorsten-Voice/VITS</a>",
     "language": "de"
   },
   "korla2": {
@@ -86,7 +76,7 @@
     "config": "korla2_config.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "staw 01.07.2025 (kostrjanc) https://hf.co/Korla/tts-modele",
+    "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
   "cyril": {
@@ -96,7 +86,7 @@
     "config": "cyril_config.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "staw 01.07.2025 (kostrjanc) https://hf.co/Korla/tts-modele",
+    "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   }
 }
