@@ -64,6 +64,7 @@ LIMIT_CHARS = 10_000
 
 app = None
 speaker_config = {}
+timbre_config = {}
 synthesizers = {}
 
 
@@ -80,10 +81,14 @@ def init_app():
 
 def init_config():
     global speaker_config
+    global timbre_config
     global names
     with open("./config.json") as f:
         speaker_config = json.load(f)
         logger.debug("speaker_config " + str(speaker_config))
+    with open("./config-timbres.json") as f:
+        timbre_config = json.load(f)
+        logger.debug("timbre-config " + str(timbre_config))
     with open("./names.json") as f:
         names = json.load(f)
         logger.debug("names " + str(names))
@@ -222,6 +227,26 @@ def fetch_speakers():
                 }
             )
     return jsonify(speakers)
+
+
+@app.route("/api/fetch_timbres/", methods=["GET"])
+def fetch_timbres():
+    logger.debug(str(request))
+    timbres = []
+    logger.debug("timbre_config: " + str(timbre_config.items()))
+    for timbre in list(timbre_config.items()):
+        timbres.append(
+            {
+                "name": timbre[1]["timbre"],
+                "id": timbre[1]["timbre_id"],
+                "info": timbre[1]["info"],
+                "language": timbre[1]["language"],
+                "emotions": timbre[1]["emotions"],
+            }
+        )
+        logger.debug("timbre: " + str(timbre))
+    logger.debug("timbres: " + str(timbres))
+    return jsonify(timbres)
 
 
 def err_msg(msg):

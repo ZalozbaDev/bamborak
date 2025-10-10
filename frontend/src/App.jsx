@@ -6,6 +6,7 @@ import {
   ReplayOutlined,
   VolumeUp,
   Warning,
+  Settings,
 } from "@mui/icons-material";
 import {
   Alert,
@@ -29,13 +30,36 @@ import { useEffect, useRef, useState } from "react";
 
 import { realtime_factor, url, max_textlen } from "./config.js";
 
+const emotions = [
+  { key: "neutral", name: "-" },
+  { key: "happy", name: "wjesoły, fröhlich" },
+  { key: "excited", name: "rozhorjeny, aufgeregt" },
+  { key: "sad", name: "zrudne, traurig" },
+  { key: "angry", name: "hněwny, wütend" },
+  { key: "frightened", name: "wubojany, verängstigt" },
+  { key: "screaming", name: "rjejace, schreiend" },
+  { key: "whispering", name: "šeptace, flüsternd" }
+];
+
+const expertModels = [
+  { key: "vctk/freevc24", name: "vctk/freevc24" },
+  { key: "openvoice_v1/1226", name: "openvoice_v1/1226" },
+  { key: "openvoice_v2/0417", name: "openvoice_v2/0417" }
+];
+
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speakers, setSpeakers] = useState([]);
+  const [timbres, setTimbres] = useState([]);
   const [text, setText] = useState("");
   const [ID, setID] = useState("");
+  const [timbreID, setTimbreID] = useState("");
+  const [emotion, setEmotion] = useState("neutral");
+  const [expertModel, setExpertModel] = useState("openvoice_v2/0417");
+  const [showExpertOptions, setShowExpertOptions] = useState(false);
+  const [hasEmotions, setHasEmotions] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -91,6 +115,9 @@ function App() {
       body: JSON.stringify({
         text: text,
         speaker_id: ID,
+        timbre_id: timbreID,
+        emotion: emotion,
+        model: expertModel,
       }),
     }).then((response) => {
       response.blob().then((blob) => {
@@ -126,6 +153,11 @@ function App() {
         setID(Object.values(data)[0].id);
         setInfoText(Object.values(data)[0].info);
         setSpeakers(data);
+      })
+    );
+    fetch(`${url}/api/fetch_timbres/`).then((response) =>
+      response.json().then((data) => {
+        setTimbres(data);
       })
     );
   }, []);
@@ -194,6 +226,112 @@ function App() {
             </IconButton>
           </Tooltip>
         </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+          }}
+        >
+          <Select
+            color="primary"
+            placeholder="wuzwol sebi timbre"
+            variant="soft"
+            sx={{ flex: 1 }}
+            value={timbreID}
+            onChange={(e, values) => {
+              const hasEmotions = timbres.find((timbre) => timbre.id === values).emotions;
+              setHasEmotions(hasEmotions)
+              if (!hasEmotions) {
+                setEmotion("neutral");
+              }
+              setTimbreID(values);
+            }}
+          >
+            {timbres.map((timbre) => {
+              return (
+                <Option value={timbre.id} key={timbre.id}>
+                  {timbre.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+          }}
+        >
+          <Select
+            color="primary"
+            placeholder="wuzwol sebi emociju"
+            variant="soft"
+            disabled={!hasEmotions}
+            sx={{ flex: 1 }}
+            value={emotion}
+            onChange={(e, values) => {
+              setEmotion(values);
+            }}
+          >
+            {emotions.map((emotionOption) => {
+              return (
+                <Option value={emotionOption.key} key={emotionOption.key}>
+                  {emotionOption.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <Tooltip title={"ekspertne opcije"}>
+            <IconButton
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              onClick={() => setShowExpertOptions(!showExpertOptions)}
+            >
+              <Settings />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        {showExpertOptions && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+            }}
+          >
+            <Select
+              color="primary"
+              placeholder="wuzwol sebi ekspertny model"
+              variant="soft"
+              sx={{ flex: 1 }}
+              value={expertModel}
+              onChange={(e, values) => {
+                setExpertModel(values);
+              }}
+            >
+              {expertModels.map((modelOption) => {
+                return (
+                  <Option value={modelOption.key} key={modelOption.key}>
+                    {modelOption.name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Box>
+        )}
         <Modal open={infoOpen}>
           <ModalDialog color="primary" layout="center" size="sm" variant="soft">
             <ModalClose

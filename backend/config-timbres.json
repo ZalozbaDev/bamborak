@@ -1,0 +1,30 @@
+{
+  "weronika": {
+    "timbre": "Weronika",
+    "timbre_id": "weronika",
+    "emotions": true,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "daniel": {
+    "timbre": "Daniel",
+    "timbre_id": "daniel",
+    "emotions": true,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "michal": {
+    "timbre": "Michal",
+    "timbre_id": "michal",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "beno": {
+    "timbre": "Beno",
+    "timbre_id": "beno",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  }
+}
