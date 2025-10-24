@@ -2,7 +2,10 @@ FROM ubuntu:noble
 MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
 
 # normal call
-# docker build -f Dockerfile.cuda --progress=plain -t bamborak_backend_cuda .
+# docker build -f Dockerfile.cuda --build-arg NVIDIA_DRIVER_PACKAGE= --build-arg NVIDIA_DRIVER_VERSION= --progress=plain -t bamborak_backend_cuda .
+
+# rebuild from scratch
+# <... same cmdline ...>  -t bamborak_backend_cuda . --no-cache
 
 WORKDIR /usr/app/src
 
@@ -37,9 +40,10 @@ RUN apt update
 RUN apt install -y nvidia-cuda-toolkit 
 
 # try to force a fixed version
-RUN apt install -y nvidia-utils-535-server=535.247.01-0ubuntu0.24.04.1 libnvidia-compute-535-server=535.247.01-0ubuntu0.24.04.1
-# RUN apt install -y nvidia-utils-575=575.64.03-0ubuntu0.24.04.1 libnvidia-compute-575=575.64.03-0ubuntu0.24.04.1
-# RUN apt install -y nvidia-utils-550=550.163.01-0ubuntu0.24.04.1 libnvidia-compute-550=550.163.01-0ubuntu0.24.04.1
+ARG NVIDIA_DRIVER_PACKAGE
+ARG NVIDIA_DRIVER_VERSION
+
+RUN apt install -y $NVIDIA_DRIVER_PACKAGE=$NVIDIA_DRIVER_VERSION
 
 # no idea how to pipe nvidia device through at build time
 # RUN nvidia-smi || echo "!!! Driver/Library mismatch!!!"
