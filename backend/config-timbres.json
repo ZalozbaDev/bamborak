@@ -1,27 +1,27 @@
 {
   "katka": {
-    "timbre": "Katka",
+    "timbre": "dominantny jasny žónski hłós",
     "timbre_id": "katka_2025_07",
     "emotions": true,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
   "daniel": {
-    "timbre": "Daniel",
+    "timbre": "čmołwy muski hłós",
     "timbre_id": "daniel",
     "emotions": true,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
   "michal": {
-    "timbre": "Michal",
+    "timbre": "energiski muski hłós",
     "timbre_id": "michal_multi_2025_02_20",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
   "jan": {
-    "timbre": "Jan",
+    "timbre": "hładki muski hłós",
     "timbre_id": "jan",
     "emotions": false,
     "info": "někajka info k tomu",

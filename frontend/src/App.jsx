@@ -31,14 +31,14 @@ import { useEffect, useRef, useState } from "react";
 import { realtime_factor, url, max_textlen } from "./config.js";
 
 const emotions = [
-  { key: "neutral", name: "-" },
-  { key: "happy", name: "wjesoły, fröhlich" },
-  { key: "excited", name: "rozhorjeny, aufgeregt" },
-  { key: "sad", name: "zrudne, traurig" },
-  { key: "angry", name: "hněwny, wütend" },
-  { key: "frightened", name: "wubojany, verängstigt" },
-  { key: "screaming", name: "rjejace, schreiend" },
-  { key: "whispering", name: "šeptace, flüsternd" }
+  { key: "neutral", name: "neutralne" },
+  { key: "happy", name: "wjesele" },
+  { key: "excited", name: "rozbudźene" },
+  { key: "sad", name: "zrudne" },
+  { key: "angry", name: "rozhorjene" },
+  { key: "frightened", name: "zatrašene" },
+  { key: "screaming", name: "škrěčo" },
+  { key: "whispering", name: "šeptajo" }
 ];
 
 const expertModels = [
