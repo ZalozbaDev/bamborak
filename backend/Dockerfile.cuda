@@ -26,17 +26,27 @@ RUN cd Python-3.11.11/ && ./configure --enable-optimizations && make -j && make 
 
 #RUN apt install -y python3-setuptools python3-distutils-extra
 
-COPY requirements.txt requirements_pinned_cuda.txt /
+COPY requirements.txt requirements_pinned_cuda.txt requirements_voice_changer.txt /
 
+RUN cat /requirements_voice_changer.txt >> /requirements_pinned_cuda.txt
+
+# code to generate a file with pinned versions 
 # RUN pip install -r /requirements.txt
 # RUN pip freeze
 
 RUN cd /usr/app/src && python3.11 -m venv .
 
-# RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install setuputils'
 RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install -r /requirements_pinned_cuda.txt'
 
+# install OpenVoice from sources
+
 RUN apt update
+RUN apt install -y git pkgconf libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libavfilter-dev libswscale-dev libswresample-dev ffmpeg
+
+RUN git clone https://github.com/ZalozbaDev/OpenVoice /usr/app/src/OpenVoice
+
+RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && cd OpenVoice && pip install -e .'
+
 RUN apt install -y nvidia-cuda-toolkit 
 
 # try to force a fixed version
@@ -53,7 +63,7 @@ RUN mkdir logs
 
 COPY ./ /usr/app/src/
 
-RUN mkdir tts_models
+RUN mkdir tts_models voice_changer
 
 EXPOSE 8080
 

@@ -281,9 +281,18 @@ def main():
                 return err_msg("invalid speaker_id")
 
         # save and display timbre / emotion / voiceChangerModel
-        timbre_id = request.json["timbre_id"]
-        emotion = request.json["emotion"]
-        voiceChangerModel = request.json["model"]
+        if "timbre_id" not in request.json:
+            timbre_id = speaker_id
+        else:
+            timbre_id = request.json["timbre_id"]
+        if "emotion" not in request.json:
+            emotion = "neutral"
+        else:
+            emotion = request.json["emotion"]
+        if "model" not in request.json:
+            voiceChangerModel = "none"
+        else:
+            voiceChangerModel = request.json["model"]
         
         logger.debug("----> voice changer opts: timbre=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " <----") 
 
@@ -461,7 +470,7 @@ def main():
         # check whether we need to call the voice changer
         if speaker_id != timbre_id or emotion != "neutral":
         	logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
-        	change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel)
+        	change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
         else:
         	logger.debug("<---- NOT calling voice changer - no change requested ---->")     
         
