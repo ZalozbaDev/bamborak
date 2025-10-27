@@ -1,7 +1,7 @@
 {
-  "weronika": {
-    "timbre": "Weronika",
-    "timbre_id": "weronika",
+  "katka": {
+    "timbre": "Katka",
+    "timbre_id": "katka_2025_07",
     "emotions": true,
     "info": "někajka info k tomu",
     "language": "hsb"
@@ -15,14 +15,14 @@
   },
   "michal": {
     "timbre": "Michal",
-    "timbre_id": "michal",
+    "timbre_id": "michal_multi_2025_02_20",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
-  "beno": {
-    "timbre": "Beno",
-    "timbre_id": "beno",
+  "jan": {
+    "timbre": "Jan",
+    "timbre_id": "jan",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"

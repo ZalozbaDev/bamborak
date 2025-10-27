@@ -23,6 +23,9 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 
+import voicechanger
+from voicechanger import change_voice
+
 logger = None
 
 
@@ -454,6 +457,14 @@ def main():
                     speaker=random.choice(cur_tts.speakers),
                 )
         logger.debug("<< synthesizer called!")
+        
+        # check whether we need to call the voice changer
+        if speaker_id != timbre_id or emotion != "neutral":
+        	logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
+        	change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel)
+        else:
+        	logger.debug("<---- NOT calling voice changer - no change requested ---->")     
+        
         exec(f"sox {temp_wav_file_path} {temp_mp3_file_path}")
         delete_temp_file_thread = threading.Thread(
             target=delete_temp_files, args=(temp_mp3_file_path, temp_wav_file_path)
