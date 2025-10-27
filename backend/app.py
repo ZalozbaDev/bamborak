@@ -277,6 +277,13 @@ def main():
             if speaker_id not in speaker_config:
                 return err_msg("invalid speaker_id")
 
+        # save and display timbre / emotion / voiceChangerModel
+        timbre_id = request.json["timbre_id"]
+        emotion = request.json["emotion"]
+        voiceChangerModel = request.json["model"]
+        
+        logger.debug("----> voice changer opts: timbre=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " <----") 
+
         # Get language from config
         language = speaker_config[speaker_id]["language"]
         
