@@ -17,10 +17,14 @@ def change_voice(wavfilename, speaker_id, timbre_id, emotion, model, logger):
     source_se, audio_name = se_extractor.get_se(base_speaker, tone_color_converter, vad=True)
 
     # handle all special cases for emotions
-    if timbre_id == "katka_2025_07":
-    	timbre_id = "katka"
+    if timbre_id == "multi_2025_02_11":
+    	timbre_id = "hanaroza"
     if timbre_id == "michal_multi_2025_02_20":
     	timbre_id = "michal"
+    if timbre_id == "arnd_multi_2025_02_21":
+    	timbre_id = "arnd"
+    if timbre_id == "katka_2025_07":
+    	timbre_id = "katka"
 
     reference_speaker = "voice_changer/" + timbre_id + "/" + timbre_id + "_" + emotion + ".wav"
     target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, vad=True)
