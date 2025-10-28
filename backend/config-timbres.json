@@ -1,15 +1,22 @@
 {
-  "katka": {
-    "timbre": "dominantny jasny žónski hłós",
-    "timbre_id": "katka_2025_07",
-    "emotions": true,
+  "weronika": {
+    "timbre": "něžny žónski hłós",
+    "timbre_id": "weronika",
+    "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
-  "daniel": {
-    "timbre": "čmołwy muski hłós",
-    "timbre_id": "daniel",
-    "emotions": true,
+  "korla": {
+    "timbre": "twjerdy, kruty muski hłós",
+    "timbre_id": "korla",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "hanaroza": {
+    "timbre": "mjechki žónski swětły hłós",
+    "timbre_id": "multi_2025_02_11",
+    "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
@@ -17,6 +24,41 @@
     "timbre": "energiski muski hłós",
     "timbre_id": "michal_multi_2025_02_20",
     "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "arnd": {
+    "timbre": "nazhonity muski hłós",
+    "timbre_id": "arnd_multi_2025_02_21",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "katka": {
+    "timbre": "dominantny jasny žónski hłós",
+    "timbre_id": "katka_2025_07",
+    "emotions": true,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "korla2": {
+    "timbre": "młodostny z dialektalnej barbu",
+    "timbre_id": "korla2",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "cyril": {
+    "timbre": "młody njewěsty muski hłós",
+    "timbre_id": "cyril",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "daniel": {
+    "timbre": "čmołwy muski hłós",
+    "timbre_id": "daniel",
+    "emotions": true,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
