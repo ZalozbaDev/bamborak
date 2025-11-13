@@ -43,9 +43,11 @@ RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && pip install -r /requ
 RUN apt update
 RUN apt install -y git pkgconf libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libavfilter-dev libswscale-dev libswresample-dev ffmpeg
 
+# RUN touch test
+
 RUN git clone https://github.com/ZalozbaDev/OpenVoice /usr/app/src/OpenVoice
 
-RUN cd /usr/app/src && git checkout 7165c2c8ac68c85e7f05a274d3cced27f7ddeab5 && /bin/bash -c 'source bin/activate && cd OpenVoice && pip install -e .'
+RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && cd OpenVoice && git checkout 7165c2c8ac68c85e7f05a274d3cced27f7ddeab5 && pip install -e .'
 
 RUN apt install -y nvidia-cuda-toolkit 
 
