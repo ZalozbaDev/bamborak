@@ -35,3 +35,12 @@ Nětkole wuzwolće rjadowak "extension".
 
 ## kontakt
 Jeli maće hišće prašenje, problemy abo chceće mi něšto druheho prajić. Pisaće mi rady mailku: bamborak@gaussia.de.
+
+## API examples
+
+curl http://localhost:8080/api/fetch_speakers/
+
+curl http://localhost:8080/api/info/
+
+curl http://localhost:8080/api/fetch_timbres/
+
