@@ -45,7 +45,7 @@ RUN apt install -y git pkgconf libavformat-dev libavcodec-dev libavdevice-dev li
 
 RUN git clone https://github.com/ZalozbaDev/OpenVoice /usr/app/src/OpenVoice
 
-RUN cd /usr/app/src && /bin/bash -c 'source bin/activate && cd OpenVoice && pip install -e .'
+RUN cd /usr/app/src && git checkout 7165c2c8ac68c85e7f05a274d3cced27f7ddeab5 && /bin/bash -c 'source bin/activate && cd OpenVoice && pip install -e .'
 
 RUN apt install -y nvidia-cuda-toolkit 
 
