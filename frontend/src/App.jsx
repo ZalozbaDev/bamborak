@@ -397,6 +397,10 @@ function App() {
     }
   }
 
+  const startDownload = () => {
+    alert('TODO: implement full text download')
+  }
+
   useEffect(() => {
     fetch(`${url}/api/fetch_speakers/`).then(response =>
       response.json().then(data => {
@@ -662,6 +666,21 @@ function App() {
         >
           tekst sebi naposkać
         </Button>
+        {isLongText && (
+          <Button
+            onClick={startDownload}
+            variant='soft'
+            startDecorator={
+              isLoading ? (
+                <CircularProgress variant='soft' determinate value={progress} />
+              ) : (
+                <Download />
+              )
+            }
+          >
+            cyły tekst wutworić
+          </Button>
+        )}
         {isLoading ? (
           <Typography>trochowany čas: {estimatedTime}s</Typography>
         ) : null}
