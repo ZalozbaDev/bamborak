@@ -1,64 +1,4 @@
 {
-  "weronika": {
-    "speaker": "Weronika",
-    "speaker_id": "weronika",
-    "model": "weronika.pth",
-    "config": "weronika.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
-    "language": "hsb"
-  },
-  "korla": {
-    "speaker": "Korla",
-    "speaker_id": "korla",
-    "model": "korla.pth",
-    "config": "korla.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
-    "language": "hsb"
-  },
-  "multi_2025_02_11": {
-    "speaker": "",
-    "speaker_id": "multi_2025_02_11",
-    "model": "multi_2025_02_11_282315.pth",
-    "config": "multi_2025_02_11_282315_config.json",
-    "multi_speaker": true,
-    "lower": false,
-    "info": "Staw 11.02.2025",
-    "language": "hsb"
-  },
-  "michal_multi_2025_02_20": {
-    "speaker": "Michał (finetune)",
-    "speaker_id": "michal_multi_2025_02_20",
-    "model": "michal_multi_2025_02_20.pth",
-    "config": "michal_multi_2025_02_20_config.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 20.02.2025",
-    "language": "hsb"
-  },
-  "arnd_multi_2025_02_21": {
-    "speaker": "Arnd (finetune)",
-    "speaker_id": "arnd_multi_2025_02_21",
-    "model": "arnd_multi_2025_02_21.pth",
-    "config": "arnd_multi_2025_02_21_config.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 21.02.2025",
-    "language": "hsb"
-  },
-  "katka_2025_07": {
-    "speaker": "Katka",
-    "speaker_id": "katka_2025_07",
-    "model": "katka_2025_07.pth",
-    "config": "katka_2025_07_config.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 07.07.2025 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
-    "language": "hsb"
-  },
   "thorsten": {
     "speaker": "Thorsten (němsce)",
     "speaker_id": "thorsten",
@@ -68,25 +8,5 @@
     "lower": false,
     "info": "Němski hłós <a href='https://huggingface.co/Thorsten-Voice/VITS'>https://hf.co/Thorsten-Voice/VITS</a>",
     "language": "de"
-  },
-  "korla2": {
-    "speaker": "Korla (kostrjanc)",
-    "speaker_id": "korla2",
-    "model": "korla2.pth",
-    "config": "korla2_config.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
-    "language": "hsb"
-  },
-  "cyril": {
-    "speaker": "Cyril (kostrjanc)",
-    "speaker_id": "cyril",
-    "model": "cyril.pth",
-    "config": "cyril_config.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
-    "language": "hsb"
   }
 }
