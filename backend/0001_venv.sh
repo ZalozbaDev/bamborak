@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 -m venv pythonenv/
+python3.11 -m venv pythonenv/
