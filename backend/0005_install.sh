@@ -4,7 +4,10 @@ source pythonenv/bin/activate
 
 pip3.11 install -r requirements_pinned_macos.txt
 
-cp ../../VITS/config.json     ./thorsten.json
-cp ../../VITS/model_file.pth  ./thorsten.pth
+rm -rf tts_models/
+mkdir -p tts_models/
+
+cp ../../VITS/config.json     tts_models/thorsten.json
+cp ../../VITS/model_file.pth  tts_models/thorsten.pth
 
 

@@ -23,9 +23,6 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 
-import voicechanger
-from voicechanger import change_voice
-
 logger = None
 
 
@@ -470,7 +467,7 @@ def main():
         # check whether we need to call the voice changer
         if speaker_id != timbre_id or emotion != "neutral":
         	logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
-        	change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
+        	# change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
         else:
         	logger.debug("<---- NOT calling voice changer - no change requested ---->")     
         
