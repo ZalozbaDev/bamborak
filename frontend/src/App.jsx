@@ -398,7 +398,56 @@ function App() {
   }
 
   const startDownload = () => {
-    alert('TODO: implement full text download')
+    if (ID === '') {
+      setOpen(true)
+      setError('Dyrbiš sebi rěčnika wuzwolić!')
+      return
+    }
+    if (text === '') {
+      setOpen(true)
+      setError('Dyrbiš tekst zapodać!')
+      return
+    }
+
+    setIsLoading(true)
+    setProgress(0)
+    setOpen(false)
+
+    const chunks = chunkText(text)
+    ;(async () => {
+      try {
+        // Synthesize all chunks
+        const audioBlobs = []
+        for (let i = 0; i < chunks.length; i++) {
+          const blob = await synthesizeChunk(chunks[i], i)
+          audioBlobs.push(blob)
+          // Update progress
+          setProgress(((i + 1) / chunks.length) * 100)
+        }
+
+        // Combine all audio blobs into one
+        const combinedBlob = new Blob(audioBlobs, { type: 'audio/mpeg' })
+
+        // Download the combined file
+        const a = document.createElement('a')
+        document.body.appendChild(a)
+        a.style = 'display: none'
+        const url = window.URL.createObjectURL(combinedBlob)
+        a.href = url
+        a.download = 'bamborak_cyły_tekst.mp3'
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+
+        setIsLoading(false)
+        setProgress(0)
+      } catch (error) {
+        setOpen(true)
+        setError('Error synthesizing text: ' + error.message)
+        setIsLoading(false)
+        setProgress(0)
+      }
+    })()
   }
 
   useEffect(() => {
