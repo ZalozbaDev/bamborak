@@ -454,8 +454,10 @@ function App() {
   useEffect(() => {
     fetch(`${url}/api/fetch_speakers/`).then(response =>
       response.json().then(data => {
-        setID(Object.values(data)[0].id)
-        setInfoText(Object.values(data)[0].info)
+        const defaultSpeaker = Object.values(data)[0]
+        setID(defaultSpeaker.id)
+        setInfoText(defaultSpeaker.info)
+        setTimbreID(defaultSpeaker.id)
         setSpeakers(data)
       })
     )
@@ -528,6 +530,7 @@ function App() {
             value={ID}
             onChange={(e, values) => {
               setID(values)
+              setTimbreID(values)
               speakers.map(speaker => {
                 if (speaker.id === values) {
                   setInfoText(speaker.info)
