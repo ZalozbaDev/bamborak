@@ -73,6 +73,7 @@ function App() {
   const [error, setError] = useState('')
   const [open, setOpen] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [progressDownload, setProgressDownload] = useState(0)
   const [estimatedTime, setEstimatedTime] = useState(0)
   const [infoOpen, setInfoOpen] = useState(false)
   const [infoText, setInfoText] = useState('')
@@ -410,7 +411,7 @@ function App() {
     }
 
     setIsLoading(true)
-    setProgress(0)
+    setProgressDownload(0)
     setOpen(false)
 
     const chunks = chunkText(text)
@@ -422,7 +423,7 @@ function App() {
           const blob = await synthesizeChunk(chunks[i], i)
           audioBlobs.push(blob)
           // Update progress
-          setProgress(((i + 1) / chunks.length) * 100)
+          setProgressDownload(((i + 1) / chunks.length) * 100)
         }
 
         // Combine all audio blobs into one
@@ -440,12 +441,12 @@ function App() {
         document.body.removeChild(a)
 
         setIsLoading(false)
-        setProgress(0)
+        setProgressDownload(0)
       } catch (error) {
         setOpen(true)
         setError('Error synthesizing text: ' + error.message)
         setIsLoading(false)
-        setProgress(0)
+        setProgressDownload(0)
       }
     })()
   }
@@ -721,7 +722,11 @@ function App() {
             variant='soft'
             startDecorator={
               isLoading ? (
-                <CircularProgress variant='soft' determinate value={progress} />
+                <CircularProgress
+                  variant='soft'
+                  determinate
+                  value={progressDownload}
+                />
               ) : (
                 <Download />
               )
