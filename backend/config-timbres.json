@@ -15,21 +15,21 @@
   },
   "hanaroza": {
     "timbre": "mjechki žónski swětły hłós",
-    "timbre_id": "multi_2025_02_11",
+    "timbre_id": "hanaroza",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
   "michal": {
     "timbre": "energiski muski hłós",
-    "timbre_id": "michal_multi_2025_02_20",
+    "timbre_id": "michal",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
   "arnd": {
     "timbre": "nazhonity muski hłós",
-    "timbre_id": "arnd_multi_2025_02_21",
+    "timbre_id": "arnd",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
@@ -51,6 +51,13 @@
   "cyril": {
     "timbre": "młody njewěsty muski hłós",
     "timbre_id": "cyril",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "beno": {
+    "timbre": "jasny muski hłós",
+    "timbre_id": "beno",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"

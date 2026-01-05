@@ -19,34 +19,34 @@
     "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
-  "multi_2025_02_11": {
-    "speaker": "",
-    "speaker_id": "multi_2025_02_11",
-    "model": "multi_2025_02_11_282315.pth",
-    "config": "multi_2025_02_11_282315_config.json",
-    "multi_speaker": true,
-    "lower": false,
-    "info": "Staw 11.02.2025",
-    "language": "hsb"
-  },
-  "michal_multi_2025_02_20": {
-    "speaker": "Michał (finetune)",
-    "speaker_id": "michal_multi_2025_02_20",
-    "model": "michal_multi_2025_02_20.pth",
-    "config": "michal_multi_2025_02_20_config.json",
+  "hanaroza": {
+    "speaker": "Hanaróža",
+    "speaker_id": "hanaroza",
+    "model": "hanaroza.pth",
+    "config": "hanaroza.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "Staw 20.02.2025",
+    "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
     "language": "hsb"
   },
-  "arnd_multi_2025_02_21": {
-    "speaker": "Arnd (finetune)",
+  "michal": {
+    "speaker": "Michał",
+    "speaker_id": "michal",
+    "model": "michal.pth",
+    "config": "michal.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
+    "language": "hsb"
+  },
+  "arnd": {
+    "speaker": "Arnd",
     "speaker_id": "arnd_multi_2025_02_21",
-    "model": "arnd_multi_2025_02_21.pth",
-    "config": "arnd_multi_2025_02_21_config.json",
+    "model": "arnd.pth",
+    "config": "arnd.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "Staw 21.02.2025",
+    "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
     "language": "hsb"
   },
   "katka_2025_07": {
@@ -87,6 +87,16 @@
     "multi_speaker": false,
     "lower": false,
     "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
+    "language": "hsb"
+  },
+  "beno": {
+    "speaker": "Beno",
+    "speaker_id": "beno",
+    "model": "beno.pth",
+    "config": "beno.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
     "language": "hsb"
   }
 }
