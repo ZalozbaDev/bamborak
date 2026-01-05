@@ -41,7 +41,7 @@
   },
   "arnd": {
     "speaker": "Arnd",
-    "speaker_id": "arnd_multi_2025_02_21",
+    "speaker_id": "arnd",
     "model": "arnd.pth",
     "config": "arnd.json",
     "multi_speaker": false,
