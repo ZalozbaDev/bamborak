@@ -26,6 +26,8 @@ from logging.handlers import RotatingFileHandler
 import voicechanger
 from voicechanger import change_voice
 
+from managed_tts import ManagedTTS
+
 logger = None
 
 
@@ -59,7 +61,10 @@ def init_logging(logdir):
     logger.debug("logging initialized")
 
 
-synthesizers = {}
+synthesizer_insts = {}
+synth_lock = threading.Lock()
+
+IDLE_TIMEOUT = 60 # (seconds, increase as necessary) 
 
 MODEL_DIR = "tts_models"
 
@@ -69,7 +74,6 @@ app = None
 speaker_config = {}
 timbre_config = {}
 synthesizers = {}
-
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -81,6 +85,19 @@ def init_app():
     CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
+def cleanup_worker():
+    while True:
+        time.sleep(30)  # check every 30s
+        with synth_lock:
+            to_delete = [
+                key for key, managed in synthesizer_insts.items()
+                if managed.can_delete(IDLE_TIMEOUT)
+            ]
+
+            for key in to_delete:
+                logger.debug("removing idle instance from GPU memory: " + key)
+                managed = synthesizer_insts.pop(key)
+                managed.destroy()
 
 def init_config():
     global speaker_config
@@ -96,6 +113,19 @@ def init_config():
         names = json.load(f)
         logger.debug("names " + str(names))
 
+def get_synthesizer(speaker_id, speaker_model, speaker_cfg, device):
+    with synth_lock:
+        if speaker_id not in synthesizer_insts:
+            synthesizer_insts[speaker_id] = ManagedTTS(
+                model_path=f"{MODEL_DIR}/{speaker_model}",
+                config_path=f"{MODEL_DIR}/{speaker_cfg}",
+                device=device,
+            )
+
+        managed = synthesizer_insts[speaker_id]
+
+    tts = managed.acquire()
+    return managed, tts
 
 def init_synthesiszers():
     for speaker in list(speaker_config.items()):
@@ -110,13 +140,17 @@ def init_synthesiszers():
                 + " model_path: "
                 + cur_model_path
             )
-            logger.debug("init_synthesiszers ...: " + str(speaker[1]))
-            logger.debug("using device: " + device)
+            logger.debug("prepare synthesiser ...: " + str(speaker[1]))
+#            logger.debug("using device: " + device)
+#            synthesizers[speaker[0]] = {
+#                "tts": TTS(
+#                    model_path=cur_model_path,
+#                    config_path=cur_config_path,
+#                ).to(device)
+#            }
             synthesizers[speaker[0]] = {
-                "tts": TTS(
-                    model_path=cur_model_path,
-                    config_path=cur_config_path,
-                ).to(device)
+                "model":  speaker[1]['model'],
+                "config": speaker[1]['config']
             }
             if speaker[1]["multi_speaker"]:
                 synthesizers[speaker[0]]["speakers"] = synthesizers[speaker[0]][
@@ -448,31 +482,42 @@ def main():
         temp_wav_file_path = f"temp/{uuid.uuid4().hex}.wav"
         temp_mp3_file_path = f"temp/{uuid.uuid4().hex}.mp3"
         logger.debug(">> calling synthesizer for '" + str(res_text) + "'")
-        cur_tts = synthesizers[speaker_id]["tts"]
+        # cur_tts = synthesizers[speaker_id]["tts"]
+        
+        spk_model  = synthesizers[speaker_id]["model"]
+        spk_config = synthesizers[speaker_id]["config"]
+        
+        logger.debug("acq inst: " +  spk_model + " / " + spk_config + ".")
+        
+        managed, cur_tts = get_synthesizer(speaker_id, spk_model, spk_config, device)
+        
         logger.debug("tts: " + str(list(cur_tts.__dict__.keys())))
-        if multi_speaker:
-            cur_tts.tts_to_file(
-                text=res_text,
-                file_path=temp_wav_file_path,
-                speaker=sub_speaker,
-            )
-        else:
-            try:
-                cur_tts.tts_to_file(text=res_text, file_path=temp_wav_file_path)
-            except ValueError:
+        try:
+            if multi_speaker:
                 cur_tts.tts_to_file(
                     text=res_text,
                     file_path=temp_wav_file_path,
-                    speaker=random.choice(cur_tts.speakers),
+                    speaker=sub_speaker,
                 )
-        logger.debug("<< synthesizer called!")
+            else:
+                try:
+                    cur_tts.tts_to_file(text=res_text, file_path=temp_wav_file_path)
+                except ValueError:
+                    cur_tts.tts_to_file(
+                        text=res_text,
+                        file_path=temp_wav_file_path,
+                        speaker=random.choice(cur_tts.speakers),
+                    )
+            logger.debug("<< synthesizer called!")
+        finally:
+            managed.release()
         
         # check whether we need to call the voice changer
         if speaker_id != timbre_id or emotion != "neutral":
-        	logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
-        	change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
+            logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
+            change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
         else:
-        	logger.debug("<---- NOT calling voice changer - no change requested ---->")     
+            logger.debug("<---- NOT calling voice changer - no change requested ---->")     
         
         exec(f"sox {temp_wav_file_path} {temp_mp3_file_path}")
         delete_temp_file_thread = threading.Thread(
@@ -519,6 +564,8 @@ if __name__ == "__main__":
     init_config()
     init_app()
     init_synthesiszers()
+
+    threading.Thread(target=cleanup_worker, daemon=True).start()
 
     logger.debug("starting webserver ...")
     app.run(port=int(os.environ.get("PORT", 8080)), host="0.0.0.0", debug=False)
