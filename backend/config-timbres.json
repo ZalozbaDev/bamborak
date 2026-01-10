@@ -1,28 +1,77 @@
 {
   "weronika": {
-    "timbre": "Weronika",
+    "timbre": "něžny žónski hłós",
     "timbre_id": "weronika",
-    "emotions": true,
+    "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
-  "daniel": {
-    "timbre": "Daniel",
-    "timbre_id": "daniel",
-    "emotions": true,
+  "korla": {
+    "timbre": "twjerdy, kruty muski hłós",
+    "timbre_id": "korla",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "hanaroza": {
+    "timbre": "mjechki žónski swětły hłós",
+    "timbre_id": "hanaroza",
+    "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
   "michal": {
-    "timbre": "Michal",
+    "timbre": "energiski muski hłós",
     "timbre_id": "michal",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
   },
+  "arnd": {
+    "timbre": "nazhonity muski hłós",
+    "timbre_id": "arnd",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "katka": {
+    "timbre": "dominantny jasny žónski hłós",
+    "timbre_id": "katka_2025_07",
+    "emotions": true,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "korla2": {
+    "timbre": "młodostny z dialektalnej barbu",
+    "timbre_id": "korla2",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "cyril": {
+    "timbre": "młody njewěsty muski hłós",
+    "timbre_id": "cyril",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
   "beno": {
-    "timbre": "Beno",
+    "timbre": "jasny muski hłós",
     "timbre_id": "beno",
+    "emotions": false,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "daniel": {
+    "timbre": "čmołwy muski hłós",
+    "timbre_id": "daniel",
+    "emotions": true,
+    "info": "někajka info k tomu",
+    "language": "hsb"
+  },
+  "jan": {
+    "timbre": "hładki muski hłós",
+    "timbre_id": "jan",
     "emotions": false,
     "info": "někajka info k tomu",
     "language": "hsb"
