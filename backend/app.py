@@ -350,7 +350,7 @@ def main():
             for match in re.findall(r"\b\d{4}-\d{2,4}\b", text):
                 first_num, sec_num = match.split("-")
                 first_num_txt = year_to_text(first_num, language)
-                sec_num_txt = year_to_text(sec_num)
+                sec_num_txt = year_to_text(sec_num, language)
                 text = text.replace(match, f"{first_num_txt} do {sec_num_txt}")
 
             for match in re.findall(r"\d{1,2}:\d{2}\s*hodź(?:\.|in)?", text):
