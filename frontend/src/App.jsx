@@ -91,6 +91,9 @@ function App() {
   const currentChunkRef = useRef(0)
   const chunksRef = useRef([])
 
+  const isPlayingRef = useRef(false)
+  const autoPausedRef = useRef(false)
+
   const timbreHasEmotions = timbre => {
     const value = timbre?.emotions
     if (Array.isArray(value)) return value.length > 0
@@ -477,6 +480,11 @@ function App() {
     )
   }, [])
 
+  // keep refs in sync with state
+  useEffect(() => {
+    isPlayingRef.current = isPlaying
+  }, [isPlaying])
+
   // Enable/disable emotions based on selected timbre (also on initial load)
   useEffect(() => {
     if (!timbres || timbres.length === 0) return
@@ -502,6 +510,63 @@ function App() {
   useEffect(() => {
     currentChunkRef.current = currentChunkIndex
   }, [currentChunkIndex])
+
+  // Auto-pause on tab/app background; auto-resume on return (only if it was playing)
+  useEffect(() => {
+    const pauseIfPlaying = () => {
+      if (!audioRef.current) return
+      const shouldPause =
+        isPlayingRef.current &&
+        !audioRef.current.paused &&
+        !audioRef.current.ended
+
+      if (shouldPause) {
+        autoPausedRef.current = true
+        audioRef.current.pause()
+        setIsPlaying(false)
+      }
+    }
+
+    const resumeIfAutoPaused = () => {
+      if (!autoPausedRef.current) return
+      if (!audioRef.current) return
+      if (audioRef.current.ended) {
+        autoPausedRef.current = false
+        return
+      }
+
+      const playPromise = audioRef.current.play()
+      if (playPromise && typeof playPromise.then === 'function') {
+        playPromise
+          .then(() => {
+            setIsPlaying(true)
+            autoPausedRef.current = false
+          })
+          .catch(() => {
+            // autoplay policies may block; keep paused state
+            autoPausedRef.current = false
+          })
+      } else {
+        setIsPlaying(true)
+        autoPausedRef.current = false
+      }
+    }
+
+    const onVisibilityChange = () => {
+      if (document.hidden) pauseIfPlaying()
+      else resumeIfAutoPaused()
+    }
+
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('blur', pauseIfPlaying)
+    window.addEventListener('focus', resumeIfAutoPaused)
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('blur', pauseIfPlaying)
+      window.removeEventListener('focus', resumeIfAutoPaused)
+    }
+  }, [])
 
   // cleanup on unmount
   useEffect(() => {
