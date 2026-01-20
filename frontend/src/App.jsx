@@ -91,6 +91,12 @@ function App() {
   const currentChunkRef = useRef(0)
   const chunksRef = useRef([])
 
+  const timbreHasEmotions = timbre => {
+    const value = timbre?.emotions
+    if (Array.isArray(value)) return value.length > 0
+    return Boolean(value)
+  }
+
   const chunkText = (text, maxLength = max_textlen_chunks) => {
     const chunks = []
     let currentChunk = ''
@@ -199,7 +205,7 @@ function App() {
         if (chunkEndHandlerRef.current) {
           audioRef.current.removeEventListener(
             'ended',
-            chunkEndHandlerRef.current
+            chunkEndHandlerRef.current,
           )
         }
       }
@@ -219,7 +225,7 @@ function App() {
           // finished - keep chunks cached for replay
           audioRef.current.removeEventListener(
             'ended',
-            chunkEndHandlerRef.current
+            chunkEndHandlerRef.current,
           )
           setIsPlaying(false)
           return
@@ -243,7 +249,7 @@ function App() {
             !preloadedRef.current.has(lookahead)
           ) {
             getChunkUrl(lookahead).catch(e =>
-              console.error('Error preloading lookahead chunk:', e)
+              console.error('Error preloading lookahead chunk:', e),
             )
           }
         } catch (err) {
@@ -299,7 +305,7 @@ function App() {
         if (chunkEndHandlerRef.current) {
           audioRef.current.removeEventListener(
             'ended',
-            chunkEndHandlerRef.current
+            chunkEndHandlerRef.current,
           )
         }
       }
@@ -341,7 +347,7 @@ function App() {
             estimated_time +
             ' = ' +
             (elapsed_time / estimated_time) * 100 +
-            '%'
+            '%',
         )
       }, 1000)
 
@@ -353,6 +359,9 @@ function App() {
         body: JSON.stringify({
           text: text,
           speaker_id: ID,
+          timbre_id: timbreID,
+          emotion: emotion,
+          model: expertModel,
         }),
       }).then(response => {
         response.blob().then(blob => {
@@ -375,7 +384,7 @@ function App() {
               if (chunkEndHandlerRef.current) {
                 audioRef.current.removeEventListener(
                   'ended',
-                  chunkEndHandlerRef.current
+                  chunkEndHandlerRef.current,
                 )
               }
             }
@@ -459,14 +468,35 @@ function App() {
         setInfoText(defaultSpeaker.info)
         setTimbreID(defaultSpeaker.id)
         setSpeakers(data)
-      })
+      }),
     )
     fetch(`${url}/api/fetch_timbres/`).then(response =>
       response.json().then(data => {
         setTimbres(data)
-      })
+      }),
     )
   }, [])
+
+  // Enable/disable emotions based on selected timbre (also on initial load)
+  useEffect(() => {
+    if (!timbres || timbres.length === 0) return
+
+    const selected = timbres.find(t => t.id === timbreID)
+    const fallback = timbres[0]
+
+    // If we don't have a valid selection yet, pick the first timbre.
+    if (!selected && !timbreID && fallback?.id) {
+      setTimbreID(fallback.id)
+      const enabled = timbreHasEmotions(fallback)
+      setHasEmotions(enabled)
+      if (!enabled) setEmotion('neutral')
+      return
+    }
+
+    const enabled = timbreHasEmotions(selected)
+    setHasEmotions(enabled)
+    if (!enabled) setEmotion('neutral')
+  }, [timbres, timbreID])
 
   // keep ref in sync with state
   useEffect(() => {
@@ -482,7 +512,7 @@ function App() {
         if (chunkEndHandlerRef.current) {
           audioRef.current.removeEventListener(
             'ended',
-            chunkEndHandlerRef.current
+            chunkEndHandlerRef.current,
           )
         }
       }
@@ -570,13 +600,10 @@ function App() {
             sx={{ flex: 1 }}
             value={timbreID}
             onChange={(e, values) => {
-              const hasEmotions = timbres.find(
-                timbre => timbre.id === values
-              ).emotions
-              setHasEmotions(hasEmotions)
-              if (!hasEmotions) {
-                setEmotion('neutral')
-              }
+              const selected = timbres.find(timbre => timbre.id === values)
+              const enabled = timbreHasEmotions(selected)
+              setHasEmotions(enabled)
+              if (!enabled) setEmotion('neutral')
               setTimbreID(values)
             }}
           >
