@@ -838,7 +838,7 @@ function App() {
             Chunk {currentChunkIndex + 1} z {textChunks.length}
           </Typography>
         ) : null}
-        {isLoaded && !isLongText ? (
+        {isLoaded ? (
           <Sheet
             color='primary'
             variant='soft'
