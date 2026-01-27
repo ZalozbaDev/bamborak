@@ -199,6 +199,43 @@ function App() {
     return urlObj
   }
 
+  const stopAudioPlayback = () => {
+    if (audioRef.current) {
+      try {
+        audioRef.current.pause()
+      } catch (e) {
+        // ignore
+      }
+      if (chunkEndHandlerRef.current) {
+        audioRef.current.removeEventListener(
+          'ended',
+          chunkEndHandlerRef.current,
+        )
+      }
+    }
+
+    revokeCurrentUrl()
+    clearPreloaded()
+
+    audioRef.current = null
+    chunkEndHandlerRef.current = null
+    audio.current = null
+    isPlayingRef.current = false
+    autoPausedRef.current = false
+    setIsPlaying(false)
+  }
+
+  const clearTextAndStopAudio = () => {
+    stopAudioPlayback()
+    setText('')
+    setIsLoaded(false)
+    setIsProcessingChunks(false)
+    setTextChunks([])
+    setCurrentChunkIndex(0)
+    currentChunkRef.current = 0
+    chunksRef.current = []
+  }
+
   // --- start chunked playback from currentChunkIndex ---
   const startChunkedPlayback = async () => {
     try {
@@ -788,6 +825,7 @@ function App() {
             flexDirection: 'row',
             width: '100%',
             alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
           <Checkbox
@@ -797,6 +835,15 @@ function App() {
             color='primary'
             variant='soft'
           />
+          <Button
+            size='sm'
+            variant='plain'
+            color='neutral'
+            sx={{ ml: 1 }}
+            onClick={clearTextAndStopAudio}
+          >
+            Tekst wumazac
+          </Button>
         </Box>
         <Button
           onClick={synthesize}
@@ -838,7 +885,7 @@ function App() {
             Chunk {currentChunkIndex + 1} z {textChunks.length}
           </Typography>
         ) : null}
-        {isLoaded && !isLongText ? (
+        {isLoaded ? (
           <Sheet
             color='primary'
             variant='soft'
