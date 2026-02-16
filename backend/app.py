@@ -301,6 +301,15 @@ def main():
             return err_msg("missing text")
         if "speaker_id" not in request.json:
             return err_msg("missing speaker_id")
+        if "format" not in request.json:
+            return err_msg("missing format")
+        format = request.json["format"]
+        
+        sample_rate = 48000 # default sample rate
+        if "sampleRate" in request.json:
+            sample_rate = request.json["sampleRate"]
+
+
         try:
             speaker_id, sub_speaker = request.json["speaker_id"].split("/")
             multi_speaker = True

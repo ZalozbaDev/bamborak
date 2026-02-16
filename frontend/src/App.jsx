@@ -157,6 +157,7 @@ function App() {
           timbre_id: timbreID,
           emotion: emotion,
           model: expertModel,
+          format: 'mp3',
         }),
       })
         .then(response => {
@@ -402,6 +403,7 @@ function App() {
           timbre_id: timbreID,
           emotion: emotion,
           model: expertModel,
+          format: 'mp3',
         }),
       }).then(response => {
         response.blob().then(blob => {
