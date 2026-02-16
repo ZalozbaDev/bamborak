@@ -489,6 +489,7 @@ def main():
             res_text = text
   
         temp_wav_file_path = f"temp/{uuid.uuid4().hex}.wav"
+        temp_wav_rs_file_path = temp_wav_file_path + ".res.wav"
         temp_mp3_file_path = f"temp/{uuid.uuid4().hex}.mp3"
         logger.debug(">> calling synthesizer for '" + str(res_text) + "'")
         # cur_tts = synthesizers[speaker_id]["tts"]
@@ -528,12 +529,20 @@ def main():
         else:
             logger.debug("<---- NOT calling voice changer - no change requested ---->")     
         
-        exec(f"sox {temp_wav_file_path} {temp_mp3_file_path}")
-        delete_temp_file_thread = threading.Thread(
-            target=delete_temp_files, args=(temp_mp3_file_path, temp_wav_file_path)
-        )
-        delete_temp_file_thread.start()
-        return send_file(temp_mp3_file_path)
+        if format == "mp3":
+            exec(f"sox {temp_wav_file_path} {temp_mp3_file_path}")
+            delete_temp_file_thread = threading.Thread(
+                target=delete_temp_files, args=(temp_mp3_file_path, temp_wav_file_path)
+            )
+            delete_temp_file_thread.start()
+            return send_file(temp_mp3_file_path)
+        else:
+            exec(f"sox {temp_wav_file_path} -b 16 -c 1 -r {sample_rate} {temp_wav_rs_file_path}")
+            delete_temp_file_thread = threading.Thread(
+                target=delete_temp_files, args=(temp_wav_rs_file_path, temp_wav_file_path)
+            )
+            delete_temp_file_thread.start()
+            return send_file(temp_wav_rs_file_path)
 
     except Exception as ex:
         trace = []
