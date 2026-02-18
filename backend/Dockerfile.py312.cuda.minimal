@@ -1,0 +1,77 @@
+# docker build -f Dockerfile.py312.cuda.minimal --progress=plain -t bamborak_backend_cuda_minimal .
+
+# rebuild from scratch
+# <... same cmdline ...>  -t bamborak_backend_cuda_minimal . --no-cache
+
+
+
+# ==============================
+# Stage 1 – Builder
+# ==============================
+FROM nvidia/cuda:12.6.2-devel-ubuntu24.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /opt/build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-venv python3-pip \
+    git pkgconf \
+    libavformat-dev libavcodec-dev libavdevice-dev \
+    libavutil-dev libavfilter-dev libswscale-dev libswresample-dev \
+    ffmpeg \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# venv außerhalb vom App-Ordner (bessere Cachebarkeit)
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# ---- Python Dependencies zuerst kopieren (Cache!)
+COPY requirements_pinned_cuda.txt /
+COPY requirements_voice_changer.txt /
+
+RUN pip install --upgrade pip setuptools wheel
+
+# große libs zuerst für besseren Cache
+RUN pip install torch torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cu126
+
+RUN pip install coqui-tts==0.27.2
+RUN pip install -r /requirements_voice_changer.txt
+RUN pip install Flask==3.1.2 flask-cors==6.0.1
+
+# ---- OpenVoice separat (Cache bei Git SHA fix)
+RUN git clone https://github.com/ZalozbaDev/OpenVoice /opt/OpenVoice \
+    && cd /opt/OpenVoice \
+    && git checkout c74f274e32cedb48479500d59aacf57b757541bb \
+    && pip install -e .
+
+# ==============================
+# Stage 2 – Runtime (minimal!)
+# ==============================
+FROM nvidia/cuda:12.6.2-runtime-ubuntu24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /usr/app/src
+
+# nur Runtime-Libraries (KEINE dev!)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    libsndfile1 sox libsox-fmt-all \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# venv vom Builder übernehmen
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
+COPY . .
+
+RUN mkdir -p logs temp tts_models voice_changer
+
+EXPOSE 8080
+
+RUN chmod 755 start.sh
+
+CMD ["./start.sh", "logs"]
