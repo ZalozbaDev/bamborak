@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git pkgconf \
     libavformat-dev libavcodec-dev libavdevice-dev \
     libavutil-dev libavfilter-dev libswscale-dev libswresample-dev \
-    ffmpeg \
+    ffmpeg curl librust-openssl-dev \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,16 +24,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+# install rust for the case of rebuilding python packages (transformers)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
 COPY requirements_voice_changer.txt /
 
 RUN pip install --upgrade pip setuptools wheel
 
-# große libs zuerst für besseren Cache
-RUN pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 \
+# Install ML stack passend zu Coqui 0.27.5
+RUN pip install torch==2.10.0+cu126 torchvision==0.25.0+cu126 torchaudio==2.10.0+cu126 \
     --index-url https://download.pytorch.org/whl/cu126
-
+RUN pip install transformers==4.25.1 tokenizers==0.13.3
 RUN pip install coqui-tts==0.27.5
-RUN pip install -r /requirements_voice_changer.txt
 RUN pip install Flask==3.1.2 flask-cors==6.0.1
 
 # ---- OpenVoice separat (Cache bei Git SHA fix)
