@@ -30,7 +30,7 @@ so set up the repo like this
 
 ```code
 sudo bash
-echo "deb https://nvidia.github.io/libnvidia-container/stable/deb/amd64 /" > /etc/apt/sources.list.d/nvidia-container-toolkit.list
+echo "deb [signed-by=/usr/share/keyrings/cuda-archive-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/amd64 /" > /etc/apt/sources.list.d/nvidia-container-toolkit.list
 ```
 
 ## add packages
