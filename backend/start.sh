@@ -1,4 +1,4 @@
 #!/bin/bash
-# nvidia-smi
+nvidia-smi
 # source bin/activate
 python3 app.py $1
