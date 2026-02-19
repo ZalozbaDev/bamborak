@@ -7,3 +7,4 @@ pydub==0.25.1
 python-dotenv
 wavmark==0.0.3
 whisper-timestamped==1.14.2
+silero-vad==5.1
