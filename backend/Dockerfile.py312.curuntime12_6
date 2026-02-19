@@ -1,13 +1,14 @@
-# normal call
-# docker build -f Dockerfile.py312.cuda --build-arg NVIDIA_DRIVER_PACKAGE= --build-arg NVIDIA_DRIVER_VERSION= --progress=plain -t bamborak_backend_cuda_minimal .
+# docker build -f Dockerfile.py312.curuntime12_6 --progress=plain -t bamborak_backend_cuda_minimal .
 
 # rebuild from scratch
 # <... same cmdline ...>  -t bamborak_backend_cuda_minimal . --no-cache
 
+
+
 # ==============================
 # Stage 1 – Builder
 # ==============================
-FROM ubuntu:noble AS bamborak_ubuntu_builder
+FROM nvidia/cuda:12.6.2-devel-ubuntu24.04 AS bamborak_cuda_builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /opt/build
@@ -25,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+# ---- Python Dependencies zuerst kopieren (Cache!)
 COPY requirements_voice_changer.txt /
 
 RUN pip install --upgrade pip setuptools wheel
@@ -44,26 +46,24 @@ RUN git clone https://github.com/ZalozbaDev/OpenVoice /opt/OpenVoice \
 # ==============================
 # Stage 2 – Runtime (minimal!)
 # ==============================
-FROM ubuntu:noble
+FROM nvidia/cuda:12.6.2-runtime-ubuntu24.04
+
+LABEL com.nvidia.cuda.version="12.6"
+LABEL license="Includes NVIDIA CUDA redistributables subject to NVIDIA EULA"
 
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /usr/app/src
-
-# try to force a fixed version
-ARG NVIDIA_DRIVER_PACKAGE
-ARG NVIDIA_DRIVER_VERSION
 
 # nur Runtime-Libraries (KEINE dev!)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     libsndfile1 sox libsox-fmt-all \
-    $NVIDIA_DRIVER_PACKAGE=$NVIDIA_DRIVER_VERSION \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # venv vom Builder übernehmen
-COPY --from=bamborak_ubuntu_builder /opt/venv /opt/venv
-COPY --from=bamborak_ubuntu_builder /opt/OpenVoice /opt/OpenVoice
+COPY --from=bamborak_cuda_builder /opt/venv /opt/venv
+COPY --from=bamborak_cuda_builder /opt/OpenVoice /opt/OpenVoice
 ENV PATH="/opt/venv/bin:$PATH"
 
 # App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
