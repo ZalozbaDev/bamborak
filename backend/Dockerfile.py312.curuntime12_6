@@ -1,4 +1,4 @@
-# docker build -f Dockerfile.py312.cuda.minimal --progress=plain -t bamborak_backend_cuda_minimal .
+# docker build -f Dockerfile.py312.curuntime12_6 --progress=plain -t bamborak_backend_cuda_minimal .
 
 # rebuild from scratch
 # <... same cmdline ...>  -t bamborak_backend_cuda_minimal . --no-cache
@@ -9,7 +9,6 @@
 # Stage 1 – Builder
 # ==============================
 FROM nvidia/cuda:12.6.2-devel-ubuntu24.04 AS builder
-# FROM nvidia/cuda:12.2.2-devel-ubuntu22.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /opt/build
@@ -28,18 +27,15 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # ---- Python Dependencies zuerst kopieren (Cache!)
-COPY requirements_pinned_cuda.txt /
 COPY requirements_voice_changer.txt /
 
 RUN pip install --upgrade pip setuptools wheel
 
-# große libs zuerst für besseren Cache
-RUN pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 \
-    --index-url https://download.pytorch.org/whl/cu126
-
-RUN pip install coqui-tts==0.27.5
+RUN pip install coqui-tts==0.27.2 Flask==3.1.2 flask-cors==6.0.1
 RUN pip install -r /requirements_voice_changer.txt
-RUN pip install Flask==3.1.2 flask-cors==6.0.1
+
+RUN pip install torch torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cu126
 
 # ---- OpenVoice separat (Cache bei Git SHA fix)
 RUN git clone https://github.com/ZalozbaDev/OpenVoice /opt/OpenVoice \
@@ -67,6 +63,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # venv vom Builder übernehmen
 COPY --from=builder /opt/venv /opt/venv
+COPY --from=builder /opt/OpenVoice /opt/OpenVoice
 ENV PATH="/opt/venv/bin:$PATH"
 
 # App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
