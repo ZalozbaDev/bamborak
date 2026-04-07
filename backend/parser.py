@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Callable
 from urllib.parse import urlparse
 
@@ -23,14 +24,31 @@ class FetchError(RuntimeError):
 
 
 def validate_url(url: str) -> str:
-    parsed = urlparse(url)
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise InvalidUrlError("Invalid URL. Please use http(s)://...")
-    return url
+    cleaned = (url or "").strip()
+    if not cleaned:
+        raise InvalidUrlError("Invalid URL. Please provide a URL.")
+
+    parsed = urlparse(cleaned)
+    if parsed.scheme in {"http", "https"} and parsed.netloc:
+        return cleaned
+
+    # Accept inputs like "www.example.de" or "example.com" and normalize to https.
+    if parsed.scheme == "" and parsed.netloc == "":
+        host_candidate = parsed.path.split("/", 1)[0]
+        domain_pattern = r"^(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$"
+        if re.match(domain_pattern, host_candidate):
+            normalized = f"https://{cleaned}"
+            normalized_parsed = urlparse(normalized)
+            if normalized_parsed.netloc:
+                return normalized
+
+    raise InvalidUrlError(
+        "Invalid URL. Please use http(s)://..., www.example.de or example.de"
+    )
 
 
 def fetch_html(url: str, timeout: int = 12) -> str:
-    validate_url(url)
+    validated_url = validate_url(url)
 
     headers = {
         "User-Agent": USER_AGENT,
@@ -39,7 +57,7 @@ def fetch_html(url: str, timeout: int = 12) -> str:
     }
 
     try:
-        response = requests.get(url, headers=headers, timeout=timeout)
+        response = requests.get(validated_url, headers=headers, timeout=timeout)
         response.raise_for_status()
     except requests.exceptions.Timeout as exc:
         raise FetchError("Request timeout while loading URL", is_timeout=True) from exc
