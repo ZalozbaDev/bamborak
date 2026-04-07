@@ -1,0 +1,81 @@
+from __future__ import annotations
+
+from typing import Callable
+from urllib.parse import urlparse
+
+import requests
+from parsers import parse_function, parse_lucija, parse_serbske_nowiny, parse_zalozba
+
+USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0.0.0 Safari/537.36 WebContentParser/1.0"
+)
+
+class InvalidUrlError(ValueError):
+    pass
+
+
+class FetchError(RuntimeError):
+    def __init__(self, message: str, is_timeout: bool = False):
+        super().__init__(message)
+        self.is_timeout = is_timeout
+
+
+def validate_url(url: str) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise InvalidUrlError("Invalid URL. Please use http(s)://...")
+    return url
+
+
+def fetch_html(url: str, timeout: int = 12) -> str:
+    validate_url(url)
+
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "de,en-US;q=0.8,en;q=0.7",
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=timeout)
+        response.raise_for_status()
+    except requests.exceptions.Timeout as exc:
+        raise FetchError("Request timeout while loading URL", is_timeout=True) from exc
+    except requests.exceptions.RequestException as exc:
+        raise FetchError(f"Could not fetch URL: {exc}") from exc
+
+    content_type = response.headers.get("Content-Type", "")
+    if "html" not in content_type.lower():
+        raise FetchError("URL did not return an HTML document")
+
+    return response.text
+
+
+def _domain_from_url(url: str) -> str:
+    host = (urlparse(url).netloc or "").lower()
+    if host.startswith("www."):
+        host = host[4:]
+    return host
+
+
+def parse_content(url: str, html: str, min_text_length: int = 40) -> list[dict[str, str | int]]:
+    domain = _domain_from_url(url)
+
+    parser_by_domain: dict[str, Callable[[str, int], list[dict[str, str | int]]]] = {
+        "serbske-nowiny.de": parse_serbske_nowiny,
+        "lucija.de": parse_lucija,
+        "zalozba.de": parse_zalozba,
+    }
+
+    parser = None
+    for key, parser_func in parser_by_domain.items():
+        if domain == key or domain.endswith(f".{key}"):
+            parser = parser_func
+            break
+
+    if parser is None:
+        return parse_function(html, min_text_length=min_text_length)
+
+    return parser(html, min_text_length)

@@ -23,8 +23,15 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 
-import voicechanger
-from voicechanger import change_voice
+VOICECHANGER_AVAILABLE = True
+voicechanger_import_error = None
+try:
+    import voicechanger
+    from voicechanger import change_voice
+except Exception as ex:
+    VOICECHANGER_AVAILABLE = False
+    voicechanger_import_error = str(ex)
+from parser import FetchError, InvalidUrlError, fetch_html, parse_content
 
 from managed_tts import ManagedTTS
 
@@ -286,6 +293,38 @@ def fetch_timbres():
     return jsonify(timbres)
 
 
+@app.route("/parse", methods=["GET"])
+def parse_url():
+    logger.debug(str(request))
+
+    raw_url = (request.args.get("url") or "").strip()
+    if not raw_url:
+        return jsonify({"error": "Missing required query parameter: url"}), 400
+
+    min_chars_raw = (request.args.get("min_chars") or "40").strip()
+    try:
+        min_chars = int(min_chars_raw)
+    except ValueError:
+        return jsonify({"error": "min_chars must be an integer"}), 400
+
+    if min_chars < 0:
+        return jsonify({"error": "min_chars must be >= 0"}), 400
+
+    try:
+        html = fetch_html(raw_url, timeout=12)
+        sections = parse_content(raw_url, html, min_text_length=min_chars)
+    except InvalidUrlError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except FetchError as exc:
+        status = 504 if exc.is_timeout else 502
+        return jsonify({"error": str(exc)}), status
+    except Exception:
+        logger.exception("unexpected parse error")
+        return jsonify({"error": "Unexpected server error"}), 500
+
+    return jsonify(sections), 200
+
+
 def err_msg(msg):
     logger.debug("errmsg " + str(msg))
     return {"errmsg": msg}
@@ -524,6 +563,9 @@ def main():
         
         # check whether we need to call the voice changer
         if speaker_id != timbre_id or emotion != "neutral":
+            if not VOICECHANGER_AVAILABLE:
+                logger.error("voice changer requested but unavailable: " + str(voicechanger_import_error))
+                return err_msg("voice changer unavailable in this deployment")
             logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
             change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
         else:

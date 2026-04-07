@@ -20,6 +20,7 @@ COPY requirements.txt requirements_pinned.txt /
 # RUN pip freeze
 
 RUN pip install -r /requirements_pinned.txt
+RUN pip install beautifulsoup4 lxml
 
 RUN mkdir temp
 RUN mkdir logs
