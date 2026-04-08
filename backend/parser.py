@@ -12,6 +12,7 @@ from parsers import (
     parse_posol,
     parse_serbske_nowiny,
     parse_zalozba,
+    parse_katolski_posol_html,
 )
 
 USER_AGENT = (
@@ -110,6 +111,8 @@ def parse_content(url: str, html: str, min_text_length: int = 40) -> list[dict[s
             break
 
     if parser is None:
-        return parse_function(html, url=normalized_url, min_text_length=min_text_length)
+      if "<title>" in html and "_KP_" in html and "_idContainer" in html:
+        return parse_katolski_posol_html(html, min_text_length=min_text_length, url=url)
+      return parse_function(html, url=normalized_url, min_text_length=min_text_length)
 
     return parser(html, min_text_length=min_text_length, url=normalized_url)
