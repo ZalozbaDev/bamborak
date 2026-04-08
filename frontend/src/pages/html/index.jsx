@@ -1,11 +1,12 @@
 import { Warning } from '@mui/icons-material'
-import { Alert, Box, Button, Stack, Typography } from '@mui/joy'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Alert, Box, Button, Option, Select, Stack, Typography } from '@mui/joy'
+import { useEffect, useMemo, useState } from 'react'
 
-import { max_textlen_chunks, url } from '../../config.js'
+import { url } from '../../config.js'
 import ParseControls from './components/ParseControls.jsx'
 import SectionCard from './components/SectionCard.jsx'
-import { chunkText, synthesizeChunk } from './utils/audioSynthesis.js'
+import useArticleAudio from './hooks/useArticleAudio.js'
+import useUrlHistory from './hooks/useUrlHistory.js'
 
 function HtmlPage() {
   const [targetUrl, setTargetUrl] = useState('')
@@ -18,34 +19,25 @@ function HtmlPage() {
   const [timbres, setTimbres] = useState([])
   const [speakerId, setSpeakerId] = useState('')
   const [timbreId, setTimbreId] = useState('')
+  const { urlHistory, rememberUrl } = useUrlHistory()
 
-  const [downloadingIndex, setDownloadingIndex] = useState(null)
-  const [downloadProgress, setDownloadProgress] = useState(0)
-  const [downloadedAudioByIndex, setDownloadedAudioByIndex] = useState({})
-
-  const [activeAudioIndex, setActiveAudioIndex] = useState(null)
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
-
-  const downloadedAudioRef = useRef({})
-  const audioPlayerRef = useRef(null)
-
-  useEffect(() => {
-    downloadedAudioRef.current = downloadedAudioByIndex
-  }, [downloadedAudioByIndex])
-
-  useEffect(() => {
-    return () => {
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.pause()
-        audioPlayerRef.current = null
-      }
-      Object.values(downloadedAudioRef.current).forEach(item => {
-        if (item?.audioUrl) {
-          window.URL.revokeObjectURL(item.audioUrl)
-        }
-      })
-    }
-  }, [])
+  const {
+    downloadingIndex,
+    downloadProgress,
+    downloadedAudioByIndex,
+    activeAudioIndex,
+    isAudioPlaying,
+    isDownloadingAll,
+    downloadAllMode,
+    setDownloadAllMode,
+    handleItemAction,
+    handleDownloadAll,
+  } = useArticleAudio({
+    sections,
+    speakerId,
+    timbreId,
+    setParseError,
+  })
 
   useEffect(() => {
     fetch(`${url}/api/fetch_speakers/`)
@@ -84,6 +76,8 @@ function HtmlPage() {
       return
     }
 
+    rememberUrl(targetUrl)
+
     setIsParsing(true)
     setParseError('')
     setSections([])
@@ -112,122 +106,6 @@ function HtmlPage() {
       ...previous,
       [index]: !previous[index],
     }))
-  }
-
-  const handleDownload = async (item, index) => {
-    if (!speakerId || !timbreId) {
-      setParseError('Prošu rěčnika a timbre wuzwolić.')
-      return
-    }
-
-    setParseError('')
-    setDownloadingIndex(index)
-    setDownloadProgress(0)
-
-    const textPayload = `${item.title}\n\n${item.text}`
-    const chunks = chunkText(textPayload, max_textlen_chunks)
-
-    try {
-      const audioBlobs = []
-      for (let i = 0; i < chunks.length; i++) {
-        const blob = await synthesizeChunk({
-          apiUrl: url,
-          chunk: chunks[i],
-          speakerId,
-          timbreId,
-        })
-        audioBlobs.push(blob)
-        setDownloadProgress(((i + 1) / chunks.length) * 100)
-      }
-
-      const combinedBlob = new Blob(audioBlobs, { type: 'audio/mpeg' })
-      const previous = downloadedAudioByIndex[index]
-      if (previous?.audioUrl) {
-        window.URL.revokeObjectURL(previous.audioUrl)
-      }
-
-      const playbackUrl = window.URL.createObjectURL(combinedBlob)
-      setDownloadedAudioByIndex(previousState => ({
-        ...previousState,
-        [index]: {
-          audioUrl: playbackUrl,
-        },
-      }))
-
-      const anchor = document.createElement('a')
-      document.body.appendChild(anchor)
-      anchor.style = 'display: none'
-      const objectUrl = window.URL.createObjectURL(combinedBlob)
-      anchor.href = objectUrl
-      anchor.download = `${(item.title || 'bamborak_html').replace(/[^a-zA-Z0-9-_]/g, '_')}.mp3`
-      anchor.target = '_blank'
-      anchor.rel = 'noopener noreferrer'
-      anchor.click()
-      window.setTimeout(() => {
-        window.URL.revokeObjectURL(objectUrl)
-        document.body.removeChild(anchor)
-      }, 1500)
-    } catch (error) {
-      setParseError(error.message || 'Njemóžach audio sćahnyć.')
-    } finally {
-      setDownloadingIndex(null)
-      setDownloadProgress(0)
-    }
-  }
-
-  const togglePlayback = index => {
-    const existingAudio = downloadedAudioByIndex[index]
-    if (!existingAudio?.audioUrl) {
-      return
-    }
-
-    const isCurrentTrack = activeAudioIndex === index
-
-    if (isCurrentTrack && audioPlayerRef.current) {
-      if (isAudioPlaying) {
-        audioPlayerRef.current.pause()
-        setIsAudioPlaying(false)
-      } else {
-        const playPromise = audioPlayerRef.current.play()
-        if (playPromise && typeof playPromise.catch === 'function') {
-          playPromise.catch(() => {
-            setParseError('Njemóžach audio wothrać.')
-          })
-        }
-        setIsAudioPlaying(true)
-      }
-      return
-    }
-
-    if (!audioPlayerRef.current) {
-      audioPlayerRef.current = new Audio()
-      audioPlayerRef.current.addEventListener('ended', () => {
-        setIsAudioPlaying(false)
-      })
-    }
-
-    audioPlayerRef.current.pause()
-    audioPlayerRef.current.src = existingAudio.audioUrl
-    audioPlayerRef.current.currentTime = 0
-
-    const playPromise = audioPlayerRef.current.play()
-    if (playPromise && typeof playPromise.catch === 'function') {
-      playPromise.catch(() => {
-        setParseError('Njemóžach audio wothrać.')
-      })
-    }
-
-    setActiveAudioIndex(index)
-    setIsAudioPlaying(true)
-  }
-
-  const handleItemAction = (item, index) => {
-    if (downloadedAudioByIndex[index]?.audioUrl) {
-      togglePlayback(index)
-      return
-    }
-
-    handleDownload(item, index)
   }
 
   return (
@@ -269,6 +147,8 @@ function HtmlPage() {
         <ParseControls
           targetUrl={targetUrl}
           onTargetUrlChange={setTargetUrl}
+          urlHistory={urlHistory}
+          onSelectHistoryUrl={setTargetUrl}
           speakerId={speakerId}
           onSpeakerChange={setSpeakerId}
           speakers={speakers}
@@ -280,6 +160,34 @@ function HtmlPage() {
         />
 
         <Typography level='body-sm'>{itemCountLabel}</Typography>
+
+        {sections.length > 0 ? (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: '220px 1fr' },
+              gap: 1,
+            }}
+          >
+            <Select
+              value={downloadAllMode}
+              onChange={(event, value) =>
+                setDownloadAllMode(value || 'individual')
+              }
+            >
+              <Option value='individual'>Wotdźělne MP3</Option>
+              <Option value='combined'>Jedna MP3 (wšitko)</Option>
+            </Select>
+            <Button
+              variant='soft'
+              loading={isDownloadingAll}
+              disabled={downloadingIndex !== null && !isDownloadingAll}
+              onClick={handleDownloadAll}
+            >
+              Wšě artikle sćahnyć
+            </Button>
+          </Box>
+        ) : null}
 
         {parseError ? (
           <Alert color='danger' variant='soft' startDecorator={<Warning />}>
