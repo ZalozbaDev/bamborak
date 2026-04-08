@@ -263,7 +263,7 @@ function HtmlPage() {
         </Box>
 
         <Typography>
-          URL zapodaj, potom dóstaneš lisćinu nadpismow a tekstow.
+          Zapodaj URL, potom dóstanješ lisćinu nadpismow a tekstow.
         </Typography>
 
         <ParseControls
