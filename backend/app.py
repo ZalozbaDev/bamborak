@@ -23,8 +23,15 @@ import logging
 import sys
 from logging.handlers import RotatingFileHandler
 
-import voicechanger
-from voicechanger import change_voice
+VOICECHANGER_AVAILABLE = True
+voicechanger_import_error = None
+try:
+    import voicechanger
+    from voicechanger import change_voice
+except Exception as ex:
+    VOICECHANGER_AVAILABLE = False
+    voicechanger_import_error = str(ex)
+from parser import FetchError, InvalidUrlError, fetch_html, parse_content
 
 from managed_tts import ManagedTTS
 
@@ -286,6 +293,90 @@ def fetch_timbres():
     return jsonify(timbres)
 
 
+@app.route("/parse", methods=["GET"])
+def parse_url():
+    logger.debug(str(request))
+
+    raw_url = (request.args.get("url") or "").strip()
+    if not raw_url:
+        return jsonify({"error": "Missing required query parameter: url"}), 400
+
+    min_chars_raw = (request.args.get("min_chars") or "40").strip()
+    try:
+        min_chars = int(min_chars_raw)
+    except ValueError:
+        return jsonify({"error": "min_chars must be an integer"}), 400
+
+    if min_chars < 0:
+        return jsonify({"error": "min_chars must be >= 0"}), 400
+
+    try:
+        html = fetch_html(raw_url, timeout=12)
+        sections = parse_content(raw_url, html, min_text_length=min_chars)
+    except InvalidUrlError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except FetchError as exc:
+        status = 504 if exc.is_timeout else 502
+        return jsonify({"error": str(exc)}), status
+    except Exception:
+        logger.exception("unexpected parse error")
+        return jsonify({"error": "Unexpected server error"}), 500
+
+    return jsonify(sections), 200
+
+
+@app.route("/parse_html", methods=["POST"])
+def parse_html_content():
+    logger.debug(str(request))
+
+    min_chars_raw = (
+        (request.args.get("min_chars") or "")
+        or ((request.get_json(silent=True) or {}).get("min_chars") if request.is_json else "")
+        or (request.form.get("min_chars") if not request.is_json else "")
+        or "40"
+    )
+
+    try:
+        min_chars = int(str(min_chars_raw).strip())
+    except ValueError:
+        return jsonify({"error": "min_chars must be an integer"}), 400
+
+    if min_chars < 0:
+        return jsonify({"error": "min_chars must be >= 0"}), 400
+
+    raw_url = ""
+    html = ""
+
+    if request.is_json:
+        payload = request.get_json(silent=True) or {}
+        raw_url = (payload.get("url") or payload.get("source_url") or "").strip()
+        html = (payload.get("html") or "").strip()
+    else:
+        upload = request.files.get("file")
+        if upload is not None:
+            raw_url = (
+                request.form.get("url")
+                or request.form.get("source_url")
+                or upload.filename
+                or ""
+            ).strip()
+            html = upload.read().decode("utf-8", errors="ignore").strip()
+        else:
+            raw_url = (request.form.get("url") or request.form.get("source_url") or "").strip()
+            html = (request.form.get("html") or "").strip()
+
+    if not html:
+        return jsonify({"error": "Missing HTML content"}), 400
+
+    try:
+        sections = parse_content(raw_url, html, min_text_length=min_chars)
+    except Exception:
+        logger.exception("unexpected parse_html error")
+        return jsonify({"error": "Unexpected server error"}), 500
+
+    return jsonify(sections), 200
+
+
 def err_msg(msg):
     logger.debug("errmsg " + str(msg))
     return {"errmsg": msg}
@@ -524,6 +615,9 @@ def main():
         
         # check whether we need to call the voice changer
         if speaker_id != timbre_id or emotion != "neutral":
+            if not VOICECHANGER_AVAILABLE:
+                logger.error("voice changer requested but unavailable: " + str(voicechanger_import_error))
+                return err_msg("voice changer unavailable in this deployment")
             logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
             change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
         else:

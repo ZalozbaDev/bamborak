@@ -1,13 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "@fontsource/public-sans";
-import { CssVarsProvider } from "@mui/joy";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import HtmlPage from './pages/html'
+import '@fontsource/public-sans'
+import { CssVarsProvider } from '@mui/joy'
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+const RootComponent = window.location.pathname === '/html' ? HtmlPage : App
+
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <CssVarsProvider>
-      <App />
+      <RootComponent />
     </CssVarsProvider>
-  </React.StrictMode>
-);
+  </React.StrictMode>,
+)
