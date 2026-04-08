@@ -4,6 +4,7 @@ import {
   KeyboardArrowUp,
   Pause,
   PlayArrow,
+  Stop,
 } from '@mui/icons-material'
 import { Box, CircularProgress, IconButton, Typography } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
@@ -20,6 +21,7 @@ function SectionCard({
   isItemPlaying,
   disableAction,
   onAction,
+  onCancelDownload,
   onToggleExpanded,
 }) {
   const measureRef = useRef(null)
@@ -106,7 +108,7 @@ function SectionCard({
             variant='plain'
             color='primary'
             disabled={disableAction}
-            onClick={onAction}
+            onClick={isDownloading ? onCancelDownload : onAction}
             sx={{
               ...stylingButtons,
               borderRadius: '50%',
@@ -119,7 +121,9 @@ function SectionCard({
               },
             }}
           >
-            {hasDownloadedAudio ? (
+            {isDownloading ? (
+              <Stop size='sm' />
+            ) : hasDownloadedAudio ? (
               isItemPlaying ? (
                 <Pause />
               ) : (

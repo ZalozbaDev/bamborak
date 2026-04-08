@@ -35,6 +35,7 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
 
   const downloadedAudioRef = useRef({})
   const audioPlayerRef = useRef(null)
+  const downloadControlRef = useRef({ canceled: false })
 
   useEffect(() => {
     downloadedAudioRef.current = downloadedAudioByIndex
@@ -54,15 +55,56 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
     }
   }, [])
 
+  const resetAllDownloadState = () => {
+    downloadControlRef.current = { canceled: false }
+    setDownloadingIndex(null)
+    setDownloadProgress(0)
+    setIsDownloadingAll(false)
+
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.pause()
+      audioPlayerRef.current.currentTime = 0
+    }
+    setActiveAudioIndex(null)
+    setIsAudioPlaying(false)
+
+    Object.values(downloadedAudioRef.current).forEach(item => {
+      if (item?.audioUrl) {
+        window.URL.revokeObjectURL(item.audioUrl)
+      }
+    })
+    setDownloadedAudioByIndex({})
+  }
+
+  const storeBlobForPlayback = (blob, index) => {
+    const previous = downloadedAudioByIndex[index]
+    if (previous?.audioUrl) {
+      window.URL.revokeObjectURL(previous.audioUrl)
+    }
+
+    const playbackUrl = window.URL.createObjectURL(blob)
+    setDownloadedAudioByIndex(previousState => ({
+      ...previousState,
+      [index]: {
+        audioUrl: playbackUrl,
+      },
+    }))
+  }
+
   const synthesizeItemBlob = async (item, index) => {
     setDownloadingIndex(index)
     setDownloadProgress(0)
+    downloadControlRef.current = { canceled: false }
 
     const textPayload = `${item.title}\n\n${item.text}`
     const chunks = chunkText(textPayload, max_textlen_chunks)
 
     const audioBlobs = []
     for (let i = 0; i < chunks.length; i++) {
+      if (downloadControlRef.current.canceled) {
+        break
+      }
+
       const blob = await synthesizeChunk({
         apiUrl: url,
         chunk: chunks[i],
@@ -73,21 +115,22 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
       setDownloadProgress(((i + 1) / chunks.length) * 100)
     }
 
-    const combinedBlob = new Blob(audioBlobs, { type: 'audio/mpeg' })
-    const previous = downloadedAudioByIndex[index]
-    if (previous?.audioUrl) {
-      window.URL.revokeObjectURL(previous.audioUrl)
+    const canceled = downloadControlRef.current.canceled
+
+    if (audioBlobs.length === 0 || canceled) {
+      return {
+        blob: null,
+        canceled,
+      }
     }
 
-    const playbackUrl = window.URL.createObjectURL(combinedBlob)
-    setDownloadedAudioByIndex(previousState => ({
-      ...previousState,
-      [index]: {
-        audioUrl: playbackUrl,
-      },
-    }))
+    const combinedBlob = new Blob(audioBlobs, { type: 'audio/mpeg' })
+    storeBlobForPlayback(combinedBlob, index)
 
-    return combinedBlob
+    return {
+      blob: combinedBlob,
+      canceled,
+    }
   }
 
   const downloadItem = async (item, index) => {
@@ -99,14 +142,28 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
     setParseError('')
 
     try {
-      const blob = await synthesizeItemBlob(item, index)
-      triggerBlobDownload(blob, `${sanitizeFilename(item.title)}.mp3`)
+      const result = await synthesizeItemBlob(item, index)
+      if (!result.blob) {
+        return { canceled: result.canceled }
+      }
+
+      triggerBlobDownload(result.blob, `${sanitizeFilename(item.title)}.mp3`)
+      return { canceled: result.canceled }
     } catch (error) {
       setParseError(error.message || 'Njemóžach audio sćahnyć.')
+      return { canceled: false, failed: true }
     } finally {
+      downloadControlRef.current = { canceled: false }
       setDownloadingIndex(null)
       setDownloadProgress(0)
     }
+  }
+
+  const cancelCurrentDownload = () => {
+    if (downloadingIndex === null) {
+      return
+    }
+    downloadControlRef.current.canceled = true
   }
 
   const togglePlayback = index => {
@@ -184,11 +241,18 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
           const item = sections[i]
           const title = item.title || `Sekcija ${i + 1}`
           const text = item.text || ''
-          const blob = await synthesizeItemBlob({ title, text }, i)
-          allBlobs.push(blob)
+          const result = await synthesizeItemBlob({ title, text }, i)
+          if (result.blob) {
+            allBlobs.push(result.blob)
+          }
+          if (result.canceled) {
+            break
+          }
         }
-        const combinedAllBlob = new Blob(allBlobs, { type: 'audio/mpeg' })
-        triggerBlobDownload(combinedAllBlob, 'bamborak_html_wse_artikle.mp3')
+        if (allBlobs.length > 0) {
+          const combinedAllBlob = new Blob(allBlobs, { type: 'audio/mpeg' })
+          triggerBlobDownload(combinedAllBlob, 'bamborak_html_wse_artikle.mp3')
+        }
         return
       }
 
@@ -196,7 +260,10 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
         const item = sections[i]
         const title = item.title || `Sekcija ${i + 1}`
         const text = item.text || ''
-        await downloadItem({ title, text }, i)
+        const result = await downloadItem({ title, text }, i)
+        if (result?.canceled) {
+          break
+        }
       }
     } catch (error) {
       setParseError(error.message || 'Njemóžach wšě artikle sćahnyć.')
@@ -216,6 +283,8 @@ function useArticleAudio({ sections, speakerId, timbreId, setParseError }) {
     isDownloadingAll,
     downloadAllMode,
     setDownloadAllMode,
+    resetAllDownloadState,
+    cancelCurrentDownload,
     handleItemAction,
     handleDownloadAll,
   }

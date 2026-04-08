@@ -1,4 +1,4 @@
-import { Warning } from '@mui/icons-material'
+import { Warning, Stop, Cancel } from '@mui/icons-material'
 import { Alert, Box, Button, Option, Select, Stack, Typography } from '@mui/joy'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -30,6 +30,8 @@ function HtmlPage() {
     isDownloadingAll,
     downloadAllMode,
     setDownloadAllMode,
+    resetAllDownloadState,
+    cancelCurrentDownload,
     handleItemAction,
     handleDownloadAll,
   } = useArticleAudio({
@@ -78,6 +80,7 @@ function HtmlPage() {
 
     rememberUrl(targetUrl)
 
+    resetAllDownloadState()
     setIsParsing(true)
     setParseError('')
     setSections([])
@@ -106,6 +109,7 @@ function HtmlPage() {
       return
     }
 
+    resetAllDownloadState()
     setIsParsing(true)
     setParseError('')
     setSections([])
@@ -206,7 +210,10 @@ function HtmlPage() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: '220px 1fr' },
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: isDownloadingAll ? '220px 1fr 120px' : '220px 1fr',
+              },
               gap: 1,
             }}
           >
@@ -227,6 +234,17 @@ function HtmlPage() {
             >
               Wšě artikle sćahnyć
             </Button>
+            {isDownloadingAll ? (
+              <Button
+                variant='outlined'
+                color='danger'
+                onClick={cancelCurrentDownload}
+                sx={{ gap: 0.5 }}
+              >
+                <Cancel />
+                Přetorhnyć
+              </Button>
+            ) : null}
           </Box>
         ) : null}
 
@@ -258,6 +276,7 @@ function HtmlPage() {
                 isItemPlaying={isItemPlaying}
                 disableAction={disableAction}
                 onAction={() => handleItemAction({ title, text }, index)}
+                onCancelDownload={cancelCurrentDownload}
                 onToggleExpanded={() => toggleExpanded(index)}
               />
             )
