@@ -3,7 +3,11 @@ from __future__ import annotations
 from parsers.common import parse_function
 
 
-def parse_zalozba(html: str, min_text_length: int = 40) -> list[dict[str, str | int]]:
+def parse_zalozba(
+    html: str,
+    min_text_length: int = 40,
+    url: str | None = None,
+) -> list[dict[str, str | int]]:
     selectors = [
         "main article",
         "article",
@@ -13,4 +17,9 @@ def parse_zalozba(html: str, min_text_length: int = 40) -> list[dict[str, str | 
         "main",
         "body",
     ]
-    return parse_function(html, candidate_selectors=selectors, min_text_length=min_text_length)
+    return parse_function(
+        html,
+        url=url,
+        candidate_selectors=selectors,
+        min_text_length=min_text_length,
+    )
