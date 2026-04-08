@@ -13,6 +13,7 @@ from parsers import (
     parse_posol,
     parse_serbske_nowiny,
     parse_zalozba,
+    parse_mdr_serbski,
 )
 
 USER_AGENT = (
@@ -102,6 +103,7 @@ def parse_content(url: str, html: str, min_text_length: int = 40) -> list[dict[s
         "zalozba.de": parse_zalozba,
         "pfarrei-crostwitz.de": parse_pfarrei_crostwitz,
         "posol.de": parse_posol,
+        "mdr.de": parse_mdr_serbski,
     }
 
     parser = None
