@@ -325,6 +325,58 @@ def parse_url():
     return jsonify(sections), 200
 
 
+@app.route("/parse_html", methods=["POST"])
+def parse_html_content():
+    logger.debug(str(request))
+
+    min_chars_raw = (
+        (request.args.get("min_chars") or "")
+        or ((request.get_json(silent=True) or {}).get("min_chars") if request.is_json else "")
+        or (request.form.get("min_chars") if not request.is_json else "")
+        or "40"
+    )
+
+    try:
+        min_chars = int(str(min_chars_raw).strip())
+    except ValueError:
+        return jsonify({"error": "min_chars must be an integer"}), 400
+
+    if min_chars < 0:
+        return jsonify({"error": "min_chars must be >= 0"}), 400
+
+    raw_url = ""
+    html = ""
+
+    if request.is_json:
+        payload = request.get_json(silent=True) or {}
+        raw_url = (payload.get("url") or payload.get("source_url") or "").strip()
+        html = (payload.get("html") or "").strip()
+    else:
+        upload = request.files.get("file")
+        if upload is not None:
+            raw_url = (
+                request.form.get("url")
+                or request.form.get("source_url")
+                or upload.filename
+                or ""
+            ).strip()
+            html = upload.read().decode("utf-8", errors="ignore").strip()
+        else:
+            raw_url = (request.form.get("url") or request.form.get("source_url") or "").strip()
+            html = (request.form.get("html") or "").strip()
+
+    if not html:
+        return jsonify({"error": "Missing HTML content"}), 400
+
+    try:
+        sections = parse_content(raw_url, html, min_text_length=min_chars)
+    except Exception:
+        logger.exception("unexpected parse_html error")
+        return jsonify({"error": "Unexpected server error"}), 500
+
+    return jsonify(sections), 200
+
+
 def err_msg(msg):
     logger.debug("errmsg " + str(msg))
     return {"errmsg": msg}

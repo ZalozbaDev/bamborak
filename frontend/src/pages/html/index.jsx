@@ -101,6 +101,46 @@ function HtmlPage() {
     }
   }
 
+  const handleParseHtmlFile = async file => {
+    if (!file) {
+      return
+    }
+
+    setIsParsing(true)
+    setParseError('')
+    setSections([])
+    setExpandedItems({})
+
+    try {
+      const html = await file.text()
+      if (!html.trim()) {
+        throw new Error('HTML dataja je prózdna.')
+      }
+
+      const response = await fetch(`${urlDEBUG}/parse_html`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          html,
+          source_url: file.name,
+        }),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Njemóžach HTML dataju parsować.')
+      }
+
+      setSections(Array.isArray(data) ? data : [])
+    } catch (error) {
+      setParseError(error.message || 'Njemóžach HTML dataju parsować.')
+    } finally {
+      setIsParsing(false)
+    }
+  }
+
   const toggleExpanded = index => {
     setExpandedItems(previous => ({
       ...previous,
@@ -157,6 +197,7 @@ function HtmlPage() {
           timbres={timbres}
           isParsing={isParsing}
           onParse={handleParse}
+          onUploadHtmlFile={handleParseHtmlFile}
         />
 
         <Typography level='body-sm'>{itemCountLabel}</Typography>

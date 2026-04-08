@@ -7,12 +7,12 @@ from urllib.parse import urlparse
 import requests
 from parsers import (
     parse_function,
+    parse_katolski_posol_html,
     parse_lucija,
     parse_pfarrei_crostwitz,
     parse_posol,
     parse_serbske_nowiny,
     parse_zalozba,
-    parse_katolski_posol_html,
 )
 
 USER_AGENT = (

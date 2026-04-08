@@ -15,6 +15,7 @@ function ParseControls({
   timbres,
   isParsing,
   onParse,
+  onUploadHtmlFile,
 }) {
   const [showHistory, setShowHistory] = useState(false)
 
@@ -101,7 +102,7 @@ function ParseControls({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' },
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr 1fr' },
           gap: 1,
         }}
       >
@@ -135,6 +136,22 @@ function ParseControls({
 
         <Button loading={isParsing} onClick={onParse}>
           Parsować
+        </Button>
+
+        <Button component='label' variant='outlined' disabled={isParsing}>
+          HTML dataju nahrać
+          <input
+            hidden
+            type='file'
+            accept='.html,text/html'
+            onChange={event => {
+              const file = event.target.files?.[0]
+              if (file) {
+                onUploadHtmlFile(file)
+              }
+              event.target.value = ''
+            }}
+          />
         </Button>
       </Box>
     </>
