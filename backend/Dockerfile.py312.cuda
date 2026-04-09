@@ -25,22 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY requirements_voice_changer.txt /
+COPY requirements.txt /
 
-RUN pip install --upgrade pip setuptools wheel
-
-RUN pip install coqui-tts==0.27.2 Flask==3.1.2 flask-cors==6.0.1
 RUN pip install -r /requirements_voice_changer.txt
-RUN pip install beautifulsoup4 lxml
-
-RUN pip install torch torchvision torchaudio \
-    --index-url https://download.pytorch.org/whl/cu126
-
-# ---- OpenVoice separat (Cache bei Git SHA fix)
-RUN git clone https://github.com/ZalozbaDev/OpenVoice /opt/OpenVoice \
-    && cd /opt/OpenVoice \
-    && git checkout c74f274e32cedb48479500d59aacf57b757541bb \
-    && pip install -e .
+RUN pip install Flask==3.1.2 flask-cors==6.0.1 beautifulsoup4 lxml
 
 # ==============================
 # Stage 2 – Runtime (minimal!)
@@ -64,7 +52,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # venv vom Builder übernehmen
 COPY --from=bamborak_ubuntu_builder /opt/venv /opt/venv
-COPY --from=bamborak_ubuntu_builder /opt/OpenVoice /opt/OpenVoice
 ENV PATH="/opt/venv/bin:$PATH"
 
 # App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
