@@ -144,7 +144,7 @@ function App() {
     return chunks
   }
 
-  const synthesizeChunk = (chunkText, chunkIndex) => {
+  const synthesizeChunk = chunkText => {
     return new Promise((resolve, reject) => {
       fetch(`${url}/api/tts/`, {
         method: 'POST',
@@ -164,7 +164,7 @@ function App() {
           response.blob().then(blob => {
             if (blob.type === 'application/json') {
               var myReader = new FileReader()
-              myReader.onload = function (event) {
+              myReader.onload = function () {
                 reject(new Error('' + myReader.result))
               }
               myReader.readAsText(blob)
@@ -205,7 +205,7 @@ function App() {
       try {
         audioRef.current.pause()
       } catch (e) {
-        // ignore
+        console.error('Error pausing audio:', e)
       }
       if (chunkEndHandlerRef.current) {
         audioRef.current.removeEventListener(
@@ -413,7 +413,7 @@ function App() {
           setIsLoading(false)
           if (blob.type == 'application/json') {
             var myReader = new FileReader()
-            myReader.onload = function (event) {
+            myReader.onload = function () {
               setOpen(true)
               setError('' + myReader.result)
               console.log('error: ' + myReader.result)
