@@ -1,4 +1,4 @@
-import { Warning, Stop, Cancel } from '@mui/icons-material'
+import { Warning, Cancel } from '@mui/icons-material'
 import { Alert, Box, Button, Option, Select, Stack, Typography } from '@mui/joy'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -121,7 +121,7 @@ function HtmlPage() {
         throw new Error('HTML dataja je prózdna.')
       }
 
-      const response = await fetch(`${urlDEBUG}/parse_html`, {
+      const response = await fetch(`${url}/parse_html`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
