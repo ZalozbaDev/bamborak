@@ -25,9 +25,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY requirements.txt /
+COPY requirements.txt requirements__sm61.txt /
 
+# pick one 
 RUN pip install -r /requirements.txt
+# RUN pip install -r /requirements__sm61.txt
+
 RUN pip install Flask==3.1.2 flask-cors==6.0.1 beautifulsoup4 lxml
 
 # ==============================
