@@ -26,8 +26,8 @@ from logging.handlers import RotatingFileHandler
 VOICECHANGER_AVAILABLE = True
 voicechanger_import_error = None
 try:
-    import voicechanger
-    from voicechanger import change_voice
+    import voicechanger_builtin
+    from voicechanger_builtin import change_voice
 except Exception as ex:
     VOICECHANGER_AVAILABLE = False
     voicechanger_import_error = str(ex)
