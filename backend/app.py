@@ -434,6 +434,7 @@ def main():
         language = speaker_config[speaker_id]["language"]
         
         text = request.json["text"].strip()
+        text = re.sub(r"(?<=\d)\.(?=\d)", "", text)
 
         if LIMIT_CHARS > 0 and len(text) > LIMIT_CHARS:
             return err_msg(f"input text too long (max {LIMIT_CHARS} characters)")
