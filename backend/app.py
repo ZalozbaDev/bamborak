@@ -5,6 +5,7 @@ from flask import request, jsonify, send_file
 from flask_cors import CORS, cross_origin
 import os
 import subprocess
+import wave
 import json
 import torch
 
@@ -381,6 +382,133 @@ def err_msg(msg):
     logger.debug("errmsg " + str(msg))
     return {"errmsg": msg}
 
+def _build_ffmpeg_atempo_filter(speed: float) -> str:
+    """
+    ffmpeg atempo unterstützt je nach Version nur Faktoren von 0.5 bis 2.0.
+    Deshalb zerlegen wir größere/kleinere Werte in mehrere Filter.
+    Beispiel:
+      speed=4.0  -> atempo=2.0,atempo=2.0
+      speed=0.25 -> atempo=0.5,atempo=0.5
+    """
+    if speed <= 0:
+        raise ValueError("speed must be > 0")
+
+    filters = []
+
+    while speed > 2.0:
+        filters.append("atempo=2.0")
+        speed /= 2.0
+
+    while speed < 0.5:
+        filters.append("atempo=0.5")
+        speed /= 0.5
+
+    filters.append(f"atempo={speed:.6g}")
+    return ",".join(filters)
+
+
+def _apply_wav_speed(wav_file_path: str, speed: float, logger=None) -> None:
+    """
+    Wendet speed nachträglich auf die erzeugte WAV-Datei an.
+
+    speed > 1.0 = schneller
+    speed < 1.0 = langsamer
+    speed = 1.0 = unverändert
+
+    Primär wird ffmpeg verwendet, weil das Tempo geändert wird,
+    ohne die Tonhöhe stark zu verändern.
+
+    Falls ffmpeg nicht verfügbar ist, gibt es einen einfachen Fallback,
+    der die Geschwindigkeit ändert, aber die Tonhöhe mitverändert.
+    """
+    if speed is None or abs(speed - 1.0) < 0.0001:
+        return
+
+    if speed <= 0:
+        raise ValueError("speed must be > 0")
+
+    tmp_file_path = wav_file_path + ".speed.wav"
+
+    # Beste Variante: ffmpeg atempo
+    try:
+        atempo_filter = _build_ffmpeg_atempo_filter(speed)
+
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-i",
+                wav_file_path,
+                "-filter:a",
+                atempo_filter,
+                "-vn",
+                tmp_file_path,
+            ],
+            check=True,
+        )
+
+        os.replace(tmp_file_path, wav_file_path)
+
+        if logger:
+            logger.debug(f"Applied wav speed with ffmpeg: {speed}")
+
+        return
+
+    except FileNotFoundError:
+        if logger:
+            logger.warning("ffmpeg not found. Falling back to simple WAV speed change.")
+
+    except subprocess.CalledProcessError as exc:
+        if logger:
+            logger.warning(f"ffmpeg speed change failed: {exc}. Falling back to simple WAV speed change.")
+
+    finally:
+        if os.path.exists(tmp_file_path):
+            try:
+                os.remove(tmp_file_path)
+            except OSError:
+                pass
+
+    # Fallback ohne ffmpeg:
+    # Ändert Geschwindigkeit, aber auch die Tonhöhe.
+    try:
+        import audioop
+
+        with wave.open(wav_file_path, "rb") as src:
+            params = src.getparams()
+            frames = src.readframes(params.nframes)
+
+        target_rate = max(1, int(params.framerate / speed))
+
+        converted_frames, _ = audioop.ratecv(
+            frames,
+            params.sampwidth,
+            params.nchannels,
+            params.framerate,
+            target_rate,
+            None,
+        )
+
+        with wave.open(tmp_file_path, "wb") as dst:
+            dst.setnchannels(params.nchannels)
+            dst.setsampwidth(params.sampwidth)
+            dst.setframerate(params.framerate)
+            dst.writeframes(converted_frames)
+
+        os.replace(tmp_file_path, wav_file_path)
+
+        if logger:
+            logger.debug(f"Applied wav speed with fallback: {speed}")
+
+    finally:
+        if os.path.exists(tmp_file_path):
+            try:
+                os.remove(tmp_file_path)
+            except OSError:
+                pass
 
 @app.route("/api/tts/", methods=["POST"])
 def main():
@@ -427,7 +555,14 @@ def main():
             voiceChangerModel = "none"
         else:
             voiceChangerModel = request.json["model"]
-        
+        if "speed" not in request.json:
+            speed = 1.0
+        else: 
+            try:
+                speed = float(request.json["speed"])  
+            except (ValueError, TypeError):
+                return err_msg("invalid speed value")
+
         logger.debug("----> voice changer opts: timbre=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " <----") 
 
         # Get language from config
@@ -610,6 +745,13 @@ def main():
                         file_path=temp_wav_file_path,
                         speaker=random.choice(cur_tts.speakers),
                     )
+
+            _apply_wav_speed(
+                wav_file_path=temp_wav_file_path,
+                speed=speed,
+                logger=logger,
+            )
+
             logger.debug("<< synthesizer called!")
         finally:
             managed.release()
