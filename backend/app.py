@@ -23,6 +23,7 @@ import re
 import logging
 import sys
 from logging.handlers import RotatingFileHandler
+import math
 
 VOICECHANGER_AVAILABLE = True
 voicechanger_import_error = None
@@ -77,6 +78,8 @@ IDLE_TIMEOUT = 60 # (seconds, increase as necessary)
 MODEL_DIR = "tts_models"
 
 LIMIT_CHARS = 10_000
+MIN_SPEED = 0.25
+MAX_SPEED = 2.0
 
 app = None
 speaker_config = {}
@@ -475,7 +478,14 @@ def _apply_wav_speed(wav_file_path: str, speed: float, logger=None) -> None:
     # Fallback ohne ffmpeg:
     # Ändert Geschwindigkeit, aber auch die Tonhöhe.
     try:
-        import audioop
+        try:
+            import audioop
+        except ImportError as exc:
+            if logger:
+                logger.warning(
+                    f"Unable to apply WAV speed fallback; leaving audio unchanged: {exc}"
+                )
+            return
 
         with wave.open(wav_file_path, "rb") as src:
             params = src.getparams()
@@ -502,6 +512,12 @@ def _apply_wav_speed(wav_file_path: str, speed: float, logger=None) -> None:
 
         if logger:
             logger.debug(f"Applied wav speed with fallback: {speed}")
+
+    except (wave.Error, OSError, ValueError, audioop.error) as exc:
+        if logger:
+            logger.warning(
+                f"Unable to apply WAV speed fallback; leaving audio unchanged: {exc}"
+            )
 
     finally:
         if os.path.exists(tmp_file_path):
@@ -562,6 +578,12 @@ def main():
                 speed = float(request.json["speed"])  
             except (ValueError, TypeError):
                 return err_msg("invalid speed value")
+
+        if not math.isfinite(speed):
+            return err_msg("invalid speed value")
+
+        if speed < MIN_SPEED or speed > MAX_SPEED:
+            return err_msg(f"speed must be between {MIN_SPEED} and {MAX_SPEED}")
 
         logger.debug("----> voice changer opts: timbre=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " <----") 
 
