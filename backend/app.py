@@ -540,9 +540,19 @@ def main():
             return err_msg("missing format")
         format = request.json["format"]
         
-        sample_rate = 48000 # default sample rate
+        sample_rate = 48000  # default sample rate
         if "sampleRate" in request.json:
-            sample_rate = request.json["sampleRate"]
+            # Accept numeric values (int or string), validate range and convert to int
+            try:
+                sample_rate_raw = request.json["sampleRate"]
+                # allow values like "48000" or 48000 or 48000.0
+                sample_rate = int(float(sample_rate_raw))
+            except (ValueError, TypeError):
+                return err_msg("invalid sampleRate value")
+
+            # Validate sensible bounds (1 Hz .. 192000 Hz)
+            if sample_rate <= 0 or sample_rate > 192000:
+                return err_msg("sampleRate must be between 1 and 192000")
 
 
         try:
