@@ -35,6 +35,11 @@ import {
   max_textlen,
   max_textlen_chunks,
 } from './config.js'
+import {
+  SettingsContainer,
+  ExpertModelOption,
+  AudioSpeedOption,
+} from './components/settings-container'
 
 const emotions = [
   { key: 'neutral', name: 'neutralne' },
@@ -47,12 +52,6 @@ const emotions = [
   { key: 'whispering', name: 'šeptajo' },
 ]
 
-const expertModels = [
-  { key: 'vctk/freevc24', name: 'vctk/freevc24' },
-  { key: 'openvoice_v1/1226', name: 'openvoice_v1/1226' },
-  { key: 'openvoice_v2/0417', name: 'openvoice_v2/0417' },
-]
-
 function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -63,7 +62,10 @@ function App() {
   const [ID, setID] = useState('')
   const [timbreID, setTimbreID] = useState('')
   const [emotion, setEmotion] = useState('neutral')
-  const [expertModel, setExpertModel] = useState('openvoice_v2/0417')
+  const [expertModel, setExpertModel] = useState(
+    ExpertModelOption.VCTK_FREEVC24,
+  )
+  const [audioSpeed, setAudioSpeed] = useState(AudioSpeedOption['1,0'])
   const [showExpertOptions, setShowExpertOptions] = useState(false)
   const [hasEmotions, setHasEmotions] = useState(false)
   const [isLongText, setIsLongText] = useState(false)
@@ -158,6 +160,7 @@ function App() {
           emotion: emotion,
           model: expertModel,
           format: 'mp3',
+          speed: audioSpeed,
         }),
       })
         .then(response => {
@@ -404,11 +407,10 @@ function App() {
           emotion: emotion,
           model: expertModel,
           format: 'mp3',
+          speed: audioSpeed,
         }),
       }).then(response => {
         response.blob().then(blob => {
-          console.log('result blob (' + blob.type + '): ')
-          console.log(blob)
           clearInterval(interval)
           setIsLoading(false)
           if (blob.type == 'application/json') {
@@ -768,32 +770,12 @@ function App() {
           </Tooltip>
         </Box>
         {showExpertOptions && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              width: '100%',
-            }}
-          >
-            <Select
-              color='primary'
-              placeholder='wuzwol sebi ekspertny model'
-              variant='soft'
-              sx={{ flex: 1 }}
-              value={expertModel}
-              onChange={(e, values) => {
-                setExpertModel(values)
-              }}
-            >
-              {expertModels.map(modelOption => {
-                return (
-                  <Option value={modelOption.key} key={modelOption.key}>
-                    {modelOption.name}
-                  </Option>
-                )
-              })}
-            </Select>
-          </Box>
+          <SettingsContainer
+            expertModel={expertModel}
+            setExpertModel={setExpertModel}
+            audioSpeed={audioSpeed}
+            setAudioSpeed={setAudioSpeed}
+          />
         )}
 
         <Modal open={infoOpen}>

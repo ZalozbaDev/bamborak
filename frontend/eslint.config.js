@@ -6,7 +6,7 @@ import { defineConfig } from 'eslint/config'
 export default defineConfig([
   pluginReact.configs.flat.recommended,
   {
-    files: ['**/*.{js,mjs,cjs,jsx}'],
+    files: ['**/*.{js,mjs,cjs,jsx,ts,tsx}'],
     plugins: { js, react: pluginReact },
     extends: ['js/recommended'],
     ignores: ['**/dist/**', '**/build/**', '**/node_modules/**'],
