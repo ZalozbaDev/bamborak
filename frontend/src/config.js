@@ -1,9 +1,8 @@
-export const url = 'https://bamborakapi.mudrowak.de'
-// export const url = "https://gaussia.de/bamborak";
-//export const url = "http://127.0.0.1:8080";
+export const url = import.meta.env.VITE_URL
+export const urlRAG = import.meta.env.VITE_URL_RAG
 
-export const realtime_factor = 0.025
+export const realtime_factor = Number(import.meta.env.VITE_REALTIME_FACTOR)
 
-export const max_textlen = 10000
+export const max_textlen = Number(import.meta.env.VITE_MAX_TEXTLEN)
 
-export const max_textlen_chunks = 10
+export const max_textlen_chunks = Number(import.meta.env.VITE_MAX_TEXTLEN_CHUNKS)
