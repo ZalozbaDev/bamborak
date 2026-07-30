@@ -18,7 +18,7 @@ jobs:
       contents: read
       packages: write
     env:
-      DOCKER_IMAGE_NAME: ${{ github.repository }}
+      DOCKER_IMAGE_NAME: ${{ github.repository }}-backend
       PUSH: ${{ toJSON(github.event_name != 'pull_request') }}
     steps:
       # Setup Docker Environment
@@ -63,8 +63,8 @@ jobs:
           # allow creation for multiple platforms
           platforms: |
             linux/amd64
-          context: .
-          file: docker/Dockerfile
+          context: backend/
+          file: backend/Dockerfile.py312.curuntime12_6
           load: false
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
