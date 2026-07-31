@@ -27,7 +27,7 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # ---- Python Dependencies zuerst kopieren (Cache!)
-COPY requirements_voice_changer.txt /
+COPY requirements.txt /
 
 RUN pip install --upgrade pip setuptools wheel
 
