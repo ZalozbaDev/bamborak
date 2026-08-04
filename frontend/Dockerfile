@@ -12,6 +12,9 @@ RUN npm run build
 ########### deployment container
 FROM nginx:stable-alpine
 
+# make sure the router works (pages fall back to the index.html)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=frontendbuild /app/dist /usr/share/nginx/html
 
 # internal port is 80
