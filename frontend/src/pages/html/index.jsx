@@ -2,7 +2,13 @@ import { Warning, Cancel } from '@mui/icons-material'
 import { Alert, Box, Button, Option, Select, Stack, Typography } from '@mui/joy'
 import { useEffect, useMemo, useState } from 'react'
 
-import { url } from '../../config.js'
+import {
+  config
+} from '../../config.js'
+const {
+  url,
+} = config;
+
 import ParseControls from './components/ParseControls.jsx'
 import SectionCard from './components/SectionCard.jsx'
 import useArticleAudio from './hooks/useArticleAudio.js'

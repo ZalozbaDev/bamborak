@@ -30,11 +30,15 @@ import { Stack } from '@mui/system'
 import { useEffect, useRef, useState } from 'react'
 
 import {
-  realtime_factor,
+  config
+} from './config.js'
+const {
   url,
+  urlRAG,
+  realtime_factor,
   max_textlen,
   max_textlen_chunks,
-} from './config.js'
+} = config;
 import {
   SettingsContainer,
   ExpertModelOption,

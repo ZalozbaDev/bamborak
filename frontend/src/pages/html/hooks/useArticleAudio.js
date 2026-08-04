@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { max_textlen_chunks, url } from '../../../config.js'
+import {
+  config
+} from '../../../config.js'
+const {
+  url,
+  max_textlen_chunks,
+} = config;
+
 import { chunkText, synthesizeChunk } from '../utils/audioSynthesis.js'
 
 function sanitizeFilename(value) {

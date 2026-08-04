@@ -1,16 +1,7 @@
 
-declare global {
-  interface Window {
-    RUNTIME_CONFIG: {
-      VITE_URL: string;
-      VITE_URL_RAG: string;
-    };
-  }
-}
-
 export const config = {
-  url: window.RUNTIME_CONFIG.VITE_URL,
-  urlRAG: window.RUNTIME_CONFIG.VITE_URL_RAG,
+  url: window.RUNTIME_CONFIG?.VITE_URL ?? "http://dummy",
+  urlRAG: window.RUNTIME_CONFIG?.VITE_URL_RAG ?? "http://dummy",
   realtime_factor: 0.025,
   max_textlen: 10000,
   max_textlen_chunks: 10,
