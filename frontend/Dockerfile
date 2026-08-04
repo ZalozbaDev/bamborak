@@ -7,6 +7,7 @@ RUN npm ci
 
 COPY vite.config.js index.html .
 ADD src/ src/
+ADD public/ public/
 RUN npm run build
 
 ########### deployment container
@@ -17,5 +18,10 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=frontendbuild /app/dist /usr/share/nginx/html
 
-# internal port is 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]

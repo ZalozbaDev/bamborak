@@ -1,0 +1,5 @@
+
+window.RUNTIME_CONFIG = {
+  VITE_URL: "${VITE_URL}"
+  VITE_URL_RAG: "${VITE_URL_RAG}"
+};
