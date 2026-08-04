@@ -1,16 +1,27 @@
-FROM node:20.11.1-bookworm
-MAINTAINER Daniel Sobe <daniel.sobe@sorben.com>
+########### build container
+FROM node:24 AS frontendbuild
+WORKDIR /app
 
-# docker build --progress=plain -t bamborak_frontend .
-# docker build --progress=plain -t bamborak_frontend . --no-cache
+COPY package*.json ./
+RUN npm ci
 
-RUN mkdir -p /application/src
+COPY vite.config.js index.html /application/ .
+RUN npm run build
 
-COPY src    /application/src
-COPY package.json package-lock.json vite.config.js index.html /application/
+########### deployment container
+FROM node:24
+WORKDIR /app
 
-RUN cd application && npm install
+# Nur die produktionsrelevanten Abhängigkeiten installieren
+COPY package*.json ./
+RUN npm ci --only=production
 
-COPY startme.sh /
+# Kopiere das gebaute Frontend UND den Backend-Code aus Stage 1
+COPY --from=frontendbuild /app/dist ./dist
 
-CMD ["/bin/bash", "-c", "/startme.sh"] 
+# Umgebungsvariable für den Produktionsmodus
+ENV NODE_ENV=production
+EXPOSE 3000
+
+# Startet Ihre JavaScript-App direkt
+CMD ["node", "dist/index.js"]
