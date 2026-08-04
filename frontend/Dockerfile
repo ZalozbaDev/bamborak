@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY vite.config.js index.html .
+COPY vite.config.js index.html src/ .
 RUN npm run build
 
 ########### deployment container
