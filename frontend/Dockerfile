@@ -10,19 +10,9 @@ ADD src/ src/
 RUN npm run build
 
 ########### deployment container
-FROM node:24
-WORKDIR /app
+FROM nginx:stable-alpine
 
-# Nur die produktionsrelevanten Abhängigkeiten installieren
-COPY package*.json ./
-RUN npm ci --only=production
+COPY --from=frontendbuild /app/dist /usr/share/nginx/html
 
-# Kopiere das gebaute Frontend UND den Backend-Code aus Stage 1
-COPY --from=frontendbuild /app/dist ./dist
-
-# Umgebungsvariable für den Produktionsmodus
-ENV NODE_ENV=production
-EXPOSE 3000
-
-# Startet Ihre JavaScript-App direkt
-CMD ["node", "dist/index.js"]
+# internal port is 80
+CMD ["nginx", "-g", "daemon off;"]
