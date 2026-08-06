@@ -76,6 +76,7 @@ synth_lock = threading.Lock()
 IDLE_TIMEOUT = 60 # (seconds, increase as necessary) 
 
 MODEL_DIR = "tts_models"
+CONFIG_DIR = "config"
 
 LIMIT_CHARS = 10_000
 MIN_SPEED = 0.25
@@ -114,13 +115,13 @@ def init_config():
     global speaker_config
     global timbre_config
     global names
-    with open("./config.json") as f:
+    with open("{CONFIG_DIR}/config.json") as f:
         speaker_config = json.load(f)
         logger.debug("speaker_config " + str(speaker_config))
-    with open("./config-timbres.json") as f:
+    with open("{CONFIG_DIR}/config-timbres.json") as f:
         timbre_config = json.load(f)
         logger.debug("timbre-config " + str(timbre_config))
-    with open("./names.json") as f:
+    with open("{CONFIG_DIR}/names.json") as f:
         names = json.load(f)
         logger.debug("names " + str(names))
 

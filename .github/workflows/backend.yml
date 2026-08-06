@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - 'test_voices'
+      - 'feat_splitout_backend_config'
     tags:
       - "v*"
   schedule:
