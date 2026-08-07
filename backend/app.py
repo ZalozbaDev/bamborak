@@ -115,13 +115,13 @@ def init_config():
     global speaker_config
     global timbre_config
     global names
-    with open("{CONFIG_DIR}/config.json") as f:
+    with open(f"{CONFIG_DIR}/config.json") as f:
         speaker_config = json.load(f)
         logger.debug("speaker_config " + str(speaker_config))
-    with open("{CONFIG_DIR}/config-timbres.json") as f:
+    with open(f"{CONFIG_DIR}/config-timbres.json") as f:
         timbre_config = json.load(f)
         logger.debug("timbre-config " + str(timbre_config))
-    with open("{CONFIG_DIR}/names.json") as f:
+    with open(f"{CONFIG_DIR}/names.json") as f:
         names = json.load(f)
         logger.debug("names " + str(names))
 
