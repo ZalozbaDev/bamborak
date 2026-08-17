@@ -41,3 +41,7 @@ cp $HF_ZSL_DIR/hanaroza/2025_12/checkpoint_7000.pth backend_data/tts_models/hana
 
 cp $HF_ZSL_DIR/michal/2025_12/checkpoint_90000.pth  backend_data/tts_models/michal.pth
 
+for i in $(find backend_data/tts_models/ -name "*.json"); do
+	echo $i;
+	sed -i 's|/usr/app/src/tts_models/|/usr/app/src/backenddata/backend_data/tts_models/|g' $i
+done
