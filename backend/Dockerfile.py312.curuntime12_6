@@ -55,7 +55,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
 COPY . .
 
-RUN mkdir -p logs temp tts_models voice_changer config
+RUN mkdir -p logs temp backenddata
 
 EXPOSE 8080
 

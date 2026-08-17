@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - 'feat_splitout_backend_config'
+      - 'refactor_tts_data'
     tags:
       - "v*"
   schedule:
