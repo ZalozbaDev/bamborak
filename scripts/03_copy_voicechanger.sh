@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# copy voicechanger files
-#cp -r ~/bamborak/voice_changer/* voice_changer/
+mkdir -p backend_data/voice_changer/
+
+cp -r voice_chager/* backend_data/voice_changer/
 
 # copy voicechanger models
 if ! [ -e tmp_openvoice ]; then
@@ -11,6 +12,6 @@ pushd tmp_openvoice
 cat checkpoints_v2_0417.zip0? > checkpoints_v2_0417.zip
 popd
 
-pushd voice_changer/models/
+pushd backend_data/voice_changer/
 unzip ../../tmp_openvoice/checkpoints_v2_0417.zip
 popd
