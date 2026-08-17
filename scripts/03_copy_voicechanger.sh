@@ -2,7 +2,7 @@
 
 mkdir -p backend_data/voice_changer/
 
-cp -r voice_chager/* backend_data/voice_changer/
+cp -r voice_changer/* backend_data/voice_changer/
 
 # copy voicechanger models
 if ! [ -e tmp_openvoice ]; then
