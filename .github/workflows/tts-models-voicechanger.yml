@@ -42,6 +42,6 @@ jobs:
         uses: oras-project/setup-oras@v1
       - name: Package models and vociechanger data
         run: |
-          ./scripts/01_copy_config.sh ; ./scripts_02_copy_models.sh ; scripts/03_copy_voicechanger.sh ; 
+          ./scripts/01_copy_config.sh ; ./scripts/02_copy_models.sh ; scripts/03_copy_voicechanger.sh ;
           OWNER="${GITHUB_REPOSITORY_OWNER,,}"
           oras push ghcr.io/${OWNER}/backend_data:${{ github.sha }} './backend_data'
