@@ -75,8 +75,9 @@ synth_lock = threading.Lock()
 
 IDLE_TIMEOUT = 60 # (seconds, increase as necessary) 
 
-MODEL_DIR = "tts_models"
-CONFIG_DIR = "config"
+MODEL_DIR         = "backend_data/tts_models"
+CONFIG_DIR        = "backend_data/config"
+VOICE_CHANGER_DIR = "backend_data/voice_changer"
 
 LIMIT_CHARS = 10_000
 MIN_SPEED = 0.25
@@ -795,7 +796,7 @@ def main():
                 logger.error("voice changer requested but unavailable: " + str(voicechanger_import_error))
                 return err_msg("voice changer unavailable in this deployment")
             logger.debug("<---- Calling voice changer with args speaker_id=" + speaker_id + ", timbre_id=" + timbre_id + ", emotion=" + emotion + ",model=" + voiceChangerModel + " ---->")
-            change_voice(temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
+            change_voice(VOICE_CHANGER_DIR, temp_wav_file_path, speaker_id, timbre_id, emotion, voiceChangerModel, logger)
         else:
             logger.debug("<---- NOT calling voice changer - no change requested ---->")     
         

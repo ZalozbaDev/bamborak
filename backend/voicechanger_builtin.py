@@ -3,7 +3,7 @@ import os
 import torch
 import sys
 
-def change_voice(wavfilename, speaker_id, timbre_id, emotion, model, logger):
+def change_voice(rootdir, wavfilename, speaker_id, timbre_id, emotion, model, logger):
     
     # hard-coded a.t.m.
     converter = "voice_conversion_models/multilingual/multi-dataset/openvoice_v2"
@@ -21,7 +21,7 @@ def change_voice(wavfilename, speaker_id, timbre_id, emotion, model, logger):
     if timbre_id == "katka_2025_07":
     	timbre_id = "katka"
 
-    reference_speaker = "voice_changer/" + timbre_id + "/" + timbre_id + "_" + emotion + ".wav"
+    reference_speaker = rootdir + "/" + timbre_id + "/" + timbre_id + "_" + emotion + ".wav"
 
     save_path = wavfilename + ".changed.wav"
 
