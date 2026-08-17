@@ -75,9 +75,9 @@ synth_lock = threading.Lock()
 
 IDLE_TIMEOUT = 60 # (seconds, increase as necessary) 
 
-MODEL_DIR         = "backend_data/tts_models"
-CONFIG_DIR        = "backend_data/config"
-VOICE_CHANGER_DIR = "backend_data/voice_changer"
+MODEL_DIR         = "backenddata/backend_data/tts_models"
+CONFIG_DIR        = "backenddata/backend_data/config"
+VOICE_CHANGER_DIR = "backenddata/backend_data/voice_changer"
 
 LIMIT_CHARS = 10_000
 MIN_SPEED = 0.25
