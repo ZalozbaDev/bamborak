@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - 'refactor_tts_data'
+      - 'test_voices'
     tags:
       - "v*"
   schedule:
