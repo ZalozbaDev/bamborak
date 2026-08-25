@@ -49,15 +49,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # venv vom Builder übernehmen
-COPY --from=bamborak_cuda_builder /opt/venv /opt/venv
+COPY --chown=1000:1000 --from=bamborak_cuda_builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
-COPY . .
+COPY --chown=1000:1000 . .
 
-RUN mkdir -p logs temp backenddata
+RUN mkdir -p logs temp/tmp backenddata 
+RUN chown -R 1000:1000 logs temp/tmp backenddata
 
 EXPOSE 8080
+
+USER 1000
 
 RUN chmod 755 start.sh
 
