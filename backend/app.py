@@ -79,6 +79,8 @@ MODEL_DIR         = "backenddata/backend_data/tts_models"
 CONFIG_DIR        = "backenddata/backend_data/config"
 VOICE_CHANGER_DIR = "backenddata/backend_data/voice_changer"
 
+TMP_PATH_DIR = "temp/tmp"
+
 LIMIT_CHARS = 10_000
 MIN_SPEED = 0.25
 MAX_SPEED = 2.0
@@ -749,9 +751,9 @@ def main():
             logger.debug("processing for: unknown language")
             res_text = text
   
-        temp_wav_file_path = f"temp/{uuid.uuid4().hex}.wav"
+        temp_wav_file_path = f"{TMP_PATH_DIR}/{uuid.uuid4().hex}.wav"
         temp_wav_rs_file_path = temp_wav_file_path + ".res.wav"
-        temp_mp3_file_path = f"temp/{uuid.uuid4().hex}.mp3"
+        temp_mp3_file_path = f"{TMP_PATH_DIR}/{uuid.uuid4().hex}.mp3"
         logger.debug(">> calling synthesizer for '" + str(res_text) + "'")
         # cur_tts = synthesizers[speaker_id]["tts"]
         
