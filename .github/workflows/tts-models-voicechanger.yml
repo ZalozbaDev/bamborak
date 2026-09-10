@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:
-      - 'test_voices'
+    tags:
+      - "v*"
   schedule:
     - cron: "0 0 * * *"
 
