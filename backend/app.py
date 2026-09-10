@@ -197,6 +197,7 @@ char_to_spoken = {
     "o": "o",
     "ó": "ót",
     "p": "pej",
+    "q": "ku",
     "r": "er",
     "ř": "eř",
     "s": "es",
@@ -660,7 +661,7 @@ def main():
                         if len(abbr) > 1:
                             for letter in abbr:
                                 written_abbr = (
-                                    f"{written_abbr} {char_to_spoken[letter.lower()]}"
+                                    f"{written_abbr} {char_to_spoken.get(letter.lower(), letter)}"
                                 )
                             res_text = res_text + " " + written_abbr + " "
                         else:
