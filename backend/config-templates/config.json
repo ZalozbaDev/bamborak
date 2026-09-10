@@ -9,14 +9,14 @@
     "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
-  "korla": {
-    "speaker": "Korla",
-    "speaker_id": "korla",
-    "model": "korla.pth",
-    "config": "korla.json",
+  "beno": {
+    "speaker": "Beno",
+    "speaker_id": "beno",
+    "model": "beno.pth",
+    "config": "beno.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
+    "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
     "language": "hsb"
   },
   "hanaroza": {
@@ -27,6 +27,26 @@
     "multi_speaker": false,
     "lower": false,
     "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
+    "language": "hsb"
+  },
+  "korla2": {
+    "speaker": "Korla (kostrjanc)",
+    "speaker_id": "korla2",
+    "model": "korla2.pth",
+    "config": "korla2_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
+    "language": "hsb"
+  },
+  "katka": {
+    "speaker": "Katka",
+    "speaker_id": "katka",
+    "model": "katka.pth",
+    "config": "katka_config.json",
+    "multi_speaker": false,
+    "lower": false,
+    "info": "Staw 07.07.2026 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
   "michal": {
@@ -50,7 +70,7 @@
     "language": "hsb"
   },
   "katka_2025_07": {
-    "speaker": "Katka",
+    "speaker": "Katka (2025)",
     "speaker_id": "katka_2025_07",
     "model": "katka_2025_07.pth",
     "config": "katka_2025_07_config.json",
@@ -69,14 +89,14 @@
     "info": "Němski hłós <a href='https://huggingface.co/Thorsten-Voice/VITS'>https://hf.co/Thorsten-Voice/VITS</a>",
     "language": "de"
   },
-  "korla2": {
-    "speaker": "Korla (kostrjanc)",
-    "speaker_id": "korla2",
-    "model": "korla2.pth",
-    "config": "korla2_config.json",
+  "korla": {
+    "speaker": "Korla",
+    "speaker_id": "korla",
+    "model": "korla.pth",
+    "config": "korla.json",
     "multi_speaker": false,
     "lower": false,
-    "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
+    "info": "Staw 28.08.2024 <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
     "language": "hsb"
   },
   "cyril": {
@@ -87,16 +107,6 @@
     "multi_speaker": false,
     "lower": false,
     "info": "staw 01.07.2025 (kostrjanc) <a href='https://hf.co/Korla/tts-modele'>https://hf.co/Korla/tts-modele</a>",
-    "language": "hsb"
-  },
-  "beno": {
-    "speaker": "Beno",
-    "speaker_id": "beno",
-    "model": "beno.pth",
-    "config": "beno.json",
-    "multi_speaker": false,
-    "lower": false,
-    "info": "Staw 05.01.2026 <a href='https://hf.co/zalozbadev/coqui-tts-modele'>https://hf.co/zalozbadev/coqui-tts-modele</a>",
     "language": "hsb"
   }
 }

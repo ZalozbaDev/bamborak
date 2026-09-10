@@ -33,6 +33,8 @@ cp $HF_KORLA_DIR/korla/model.pth     backend_data/tts_models/korla2.pth
 
 cp $HF_KORLA_DIR/cyril/model.pth     backend_data/tts_models/cyril.pth
 
+cp $HF_KORLA_DIR/v2/katka.pth        backend_data/tts_models/katka.pth
+
 cp $HF_ZSL_DIR/arnd/2025_12/checkpoint_8000.pth     backend_data/tts_models/arnd.pth
 
 cp $HF_ZSL_DIR/beno/2025_12/checkpoint_100000.pth   backend_data/tts_models/beno.pth
