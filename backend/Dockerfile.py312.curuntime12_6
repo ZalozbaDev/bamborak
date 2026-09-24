@@ -52,7 +52,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # venv vom Builder übernehmen
 COPY --from=bamborak_cuda_builder /opt/venv /opt/venv
-COPY --from=bamborak_cuda_builder /opt/OpenVoice /opt/OpenVoice
+# COPY --from=bamborak_cuda_builder /opt/OpenVoice /opt/OpenVoice
 ENV PATH="/opt/venv/bin:$PATH"
 
 # App-Code zuletzt kopieren → C++ Rebuild nur bei Codeänderung
